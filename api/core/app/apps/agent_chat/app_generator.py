@@ -13,7 +13,7 @@ from core.app.app_config.features.file_upload.manager import FileUploadConfigMan
 from core.app.apps.agent_chat.app_config_manager import AgentChatAppConfigManager
 from core.app.apps.agent_chat.app_runner import AgentChatAppRunner
 from core.app.apps.agent_chat.generate_response_converter import AgentChatAppGenerateResponseConverter
-from core.app.apps.base_app_queue_manager import AppQueueManager, GenerateTaskStoppedException, PublishFrom
+from core.app.apps.base_app_queue_manager import AppQueueManager, GenerateTaskStoppedError, PublishFrom
 from core.app.apps.message_based_app_generator import MessageBasedAppGenerator
 from core.app.apps.message_based_app_queue_manager import MessageBasedAppQueueManager
 from core.app.entities.app_invoke_entities import AgentChatAppGenerateEntity, InvokeFrom
@@ -127,6 +127,7 @@ class AgentChatAppGenerator(MessageBasedAppGenerator):
             inputs=conversation.inputs if conversation else self._get_cleaned_inputs(inputs, app_config),
             query=query,
             files=file_objs,
+            parent_message_id=args.get("parent_message_id"),
             user_id=user.id,
             stream=stream,
             invoke_from=invoke_from,
@@ -205,7 +206,7 @@ class AgentChatAppGenerator(MessageBasedAppGenerator):
                     conversation=conversation,
                     message=message,
                 )
-            except GenerateTaskStoppedException:
+            except GenerateTaskStoppedError:
                 pass
             except InvokeAuthorizationError:
                 queue_manager.publish_error(

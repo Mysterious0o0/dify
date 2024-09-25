@@ -4,6 +4,7 @@ import tempfile
 import uuid
 from collections.abc import Generator
 from http import HTTPStatus
+from pathlib import Path
 from typing import Optional, Union, cast
 
 from dashscope import Generation, MultiModalConversation, get_tokenizer
@@ -29,7 +30,15 @@ from core.model_runtime.entities.message_entities import (
     ToolPromptMessage,
     UserPromptMessage,
 )
-from core.model_runtime.entities.model_entities import ModelFeature
+from core.model_runtime.entities.model_entities import (
+    AIModelEntity,
+    FetchFrom,
+    I18nObject,
+    ModelFeature,
+    ModelType,
+    ParameterRule,
+    ParameterType,
+)
 from core.model_runtime.errors.invoke import (
     InvokeAuthorizationError,
     InvokeBadRequestError,
@@ -88,7 +97,7 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
         :param tools: tools for tool calling
         :return:
         """
-        if model in ["qwen-turbo-chat", "qwen-plus-chat"]:
+        if model in {"qwen-turbo-chat", "qwen-plus-chat"}:
             model = model.replace("-chat", "")
         if model == "farui-plus":
             model = "qwen-farui-plus"
@@ -156,7 +165,7 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
 
         mode = self.get_model_mode(model, credentials)
 
-        if model in ["qwen-turbo-chat", "qwen-plus-chat"]:
+        if model in {"qwen-turbo-chat", "qwen-plus-chat"}:
             model = model.replace("-chat", "")
 
         extra_model_kwargs = {}
@@ -200,7 +209,7 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
         :param prompt_messages: prompt messages
         :return: llm response
         """
-        if response.status_code != 200 and response.status_code != HTTPStatus.OK:
+        if response.status_code not in {200, HTTPStatus.OK}:
             raise ServiceUnavailableError(response.message)
         # transform assistant message to prompt message
         assistant_prompt_message = AssistantPromptMessage(
@@ -239,7 +248,7 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
         full_text = ""
         tool_calls = []
         for index, response in enumerate(responses):
-            if response.status_code != 200 and response.status_code != HTTPStatus.OK:
+            if response.status_code not in {200, HTTPStatus.OK}:
                 raise ServiceUnavailableError(
                     f"Failed to invoke model {model}, status code: {response.status_code}, "
                     f"message: {response.message}"
@@ -350,9 +359,7 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
                         break
         elif isinstance(message, AssistantPromptMessage):
             message_text = f"{ai_prompt} {content}"
-        elif isinstance(message, SystemPromptMessage):
-            message_text = content
-        elif isinstance(message, ToolPromptMessage):
+        elif isinstance(message, SystemPromptMessage | ToolPromptMessage):
             message_text = content
         else:
             raise ValueError(f"Got unknown type {message}")
@@ -456,8 +463,7 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
 
         file_path = os.path.join(temp_dir, f"{uuid.uuid4()}.{mime_type.split('/')[1]}")
 
-        with open(file_path, "wb") as image_file:
-            image_file.write(base64.b64decode(encoded_string))
+        Path(file_path).write_bytes(base64.b64decode(encoded_string))
 
         return f"file://{file_path}"
 
@@ -474,7 +480,7 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
             for p_key, p_val in properties.items():
                 desc = p_val["description"]
                 if "enum" in p_val:
-                    desc += f"; Only accepts one of the following predefined options: " f"[{', '.join(p_val['enum'])}]"
+                    desc += f"; Only accepts one of the following predefined options: [{', '.join(p_val['enum'])}]"
 
                 properties_definitions[p_key] = {
                     "description": desc,
@@ -522,3 +528,64 @@ class TongyiLargeLanguageModel(LargeLanguageModel):
                 UnsupportedHTTPMethod,
             ],
         }
+
+    def get_customizable_model_schema(self, model: str, credentials: dict) -> AIModelEntity | None:
+        """
+        Architecture for defining customizable models
+
+        :param model: model name
+        :param credentials: model credentials
+        :return: AIModelEntity or None
+        """
+        rules = [
+            ParameterRule(
+                name="temperature",
+                type=ParameterType.FLOAT,
+                use_template="temperature",
+                label=I18nObject(zh_Hans="温度", en_US="Temperature"),
+            ),
+            ParameterRule(
+                name="top_p",
+                type=ParameterType.FLOAT,
+                use_template="top_p",
+                label=I18nObject(zh_Hans="Top P", en_US="Top P"),
+            ),
+            ParameterRule(
+                name="top_k",
+                type=ParameterType.INT,
+                min=0,
+                max=99,
+                label=I18nObject(zh_Hans="top_k", en_US="top_k"),
+            ),
+            ParameterRule(
+                name="max_tokens",
+                type=ParameterType.INT,
+                min=1,
+                max=128000,
+                default=1024,
+                label=I18nObject(zh_Hans="最大生成长度", en_US="Max Tokens"),
+            ),
+            ParameterRule(
+                name="seed",
+                type=ParameterType.INT,
+                default=1234,
+                label=I18nObject(zh_Hans="随机种子", en_US="Random Seed"),
+            ),
+            ParameterRule(
+                name="repetition_penalty",
+                type=ParameterType.FLOAT,
+                default=1.1,
+                label=I18nObject(zh_Hans="重复惩罚", en_US="Repetition Penalty"),
+            ),
+        ]
+
+        entity = AIModelEntity(
+            model=model,
+            label=I18nObject(en_US=model),
+            fetch_from=FetchFrom.CUSTOMIZABLE_MODEL,
+            model_type=ModelType.LLM,
+            model_properties={},
+            parameter_rules=rules,
+        )
+
+        return entity
