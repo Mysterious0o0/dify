@@ -1,3 +1,4 @@
+# for more details, please refer to https://help.aliyun.com/zh/model-studio/getting-started/models
 model: qwen-vl-plus-0809
 label:
   en_US: qwen-vl-plus-0809
@@ -5,6 +6,7 @@ model_type: llm
 features:
   - vision
   - agent-thought
+  - video
 model_properties:
   mode: chat
   context_size: 32768
