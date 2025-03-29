@@ -129,7 +129,7 @@ class TidbOnQdrantVector(BaseVector):
                     max_indexing_threads=0,
                     on_disk=False,
                 )
-                self._client.recreate_collection(
+                self._client.create_collection(
                     collection_name=collection_name,
                     vectors_config=vectors_config,
                     hnsw_config=hnsw_config,
@@ -143,6 +143,10 @@ class TidbOnQdrantVector(BaseVector):
                 # create doc_id payload index
                 self._client.create_payload_index(
                     collection_name, Field.DOC_ID.value, field_schema=PayloadSchemaType.KEYWORD
+                )
+                # create document_id payload index
+                self._client.create_payload_index(
+                    collection_name, Field.DOCUMENT_ID.value, field_schema=PayloadSchemaType.KEYWORD
                 )
                 # create full text index
                 text_index_params = TextIndexParams(
@@ -318,14 +322,17 @@ class TidbOnQdrantVector(BaseVector):
     def search_by_vector(self, query_vector: list[float], **kwargs: Any) -> list[Document]:
         from qdrant_client.http import models
 
-        filter = models.Filter(
-            must=[
-                models.FieldCondition(
-                    key="group_id",
-                    match=models.MatchValue(value=self._group_id),
-                ),
-            ],
-        )
+        filter = None
+        document_ids_filter = kwargs.get("document_ids_filter")
+        if document_ids_filter:
+            filter = models.Filter(
+                must=[
+                    models.FieldCondition(
+                        key="metadata.document_id",
+                        match=models.MatchAny(any=document_ids_filter),
+                    )
+                ],
+            )
         results = self._client.search(
             collection_name=self._collection_name,
             query_vector=query_vector,
@@ -360,14 +367,17 @@ class TidbOnQdrantVector(BaseVector):
         """
         from qdrant_client.http import models
 
-        scroll_filter = models.Filter(
-            must=[
-                models.FieldCondition(
-                    key="page_content",
-                    match=models.MatchText(text=query),
-                )
-            ]
-        )
+        scroll_filter = None
+        document_ids_filter = kwargs.get("document_ids_filter")
+        if document_ids_filter:
+            scroll_filter = models.Filter(
+                must=[
+                    models.FieldCondition(
+                        key="metadata.document_id",
+                        match=models.MatchAny(any=document_ids_filter),
+                    )
+                ]
+            )
         response = self._client.scroll(
             collection_name=self._collection_name,
             scroll_filter=scroll_filter,
@@ -409,27 +419,27 @@ class TidbOnQdrantVectorFactory(AbstractVectorFactory):
             db.session.query(TidbAuthBinding).filter(TidbAuthBinding.tenant_id == dataset.tenant_id).one_or_none()
         )
         if not tidb_auth_binding:
-            idle_tidb_auth_binding = (
-                db.session.query(TidbAuthBinding)
-                .filter(TidbAuthBinding.active == False, TidbAuthBinding.status == "ACTIVE")
-                .limit(1)
-                .one_or_none()
-            )
-            if idle_tidb_auth_binding:
-                idle_tidb_auth_binding.active = True
-                idle_tidb_auth_binding.tenant_id = dataset.tenant_id
-                db.session.commit()
-                TIDB_ON_QDRANT_API_KEY = f"{idle_tidb_auth_binding.account}:{idle_tidb_auth_binding.password}"
-            else:
-                with redis_client.lock("create_tidb_serverless_cluster_lock", timeout=900):
-                    tidb_auth_binding = (
+            with redis_client.lock("create_tidb_serverless_cluster_lock", timeout=900):
+                tidb_auth_binding = (
+                    db.session.query(TidbAuthBinding)
+                    .filter(TidbAuthBinding.tenant_id == dataset.tenant_id)
+                    .one_or_none()
+                )
+                if tidb_auth_binding:
+                    TIDB_ON_QDRANT_API_KEY = f"{tidb_auth_binding.account}:{tidb_auth_binding.password}"
+
+                else:
+                    idle_tidb_auth_binding = (
                         db.session.query(TidbAuthBinding)
-                        .filter(TidbAuthBinding.tenant_id == dataset.tenant_id)
+                        .filter(TidbAuthBinding.active == False, TidbAuthBinding.status == "ACTIVE")
+                        .limit(1)
                         .one_or_none()
                     )
-                    if tidb_auth_binding:
-                        TIDB_ON_QDRANT_API_KEY = f"{tidb_auth_binding.account}:{tidb_auth_binding.password}"
-
+                    if idle_tidb_auth_binding:
+                        idle_tidb_auth_binding.active = True
+                        idle_tidb_auth_binding.tenant_id = dataset.tenant_id
+                        db.session.commit()
+                        TIDB_ON_QDRANT_API_KEY = f"{idle_tidb_auth_binding.account}:{idle_tidb_auth_binding.password}"
                     else:
                         new_cluster = TidbService.create_tidb_serverless_cluster(
                             dify_config.TIDB_PROJECT_ID or "",
@@ -451,7 +461,6 @@ class TidbOnQdrantVectorFactory(AbstractVectorFactory):
                         db.session.add(new_tidb_auth_binding)
                         db.session.commit()
                         TIDB_ON_QDRANT_API_KEY = f"{new_tidb_auth_binding.account}:{new_tidb_auth_binding.password}"
-
         else:
             TIDB_ON_QDRANT_API_KEY = f"{tidb_auth_binding.account}:{tidb_auth_binding.password}"
 

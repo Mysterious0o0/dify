@@ -126,7 +126,7 @@ export const getMultipleRetrievalConfig = (
     reranking_mode,
     reranking_model,
     weights,
-    reranking_enable: ((allInternal && allEconomic) || allExternal) ? reranking_enable : true,
+    reranking_enable: ((allInternal && allEconomic) || allExternal) ? reranking_enable : shouldSetWeightDefaultValue,
   }
 
   const setDefaultWeights = () => {
@@ -152,16 +152,24 @@ export const getMultipleRetrievalConfig = (
 
   if (allEconomic || mixtureHighQualityAndEconomic || inconsistentEmbeddingModel || allExternal || mixtureInternalAndExternal) {
     result.reranking_mode = RerankingModeEnum.RerankingModel
+    if (!result.reranking_model?.provider || !result.reranking_model?.model) {
+      if (rerankModelIsValid) {
+        result.reranking_enable = reranking_enable !== false
 
-    if (rerankModelIsValid) {
-      result.reranking_mode = RerankingModeEnum.RerankingModel
-      result.reranking_model = {
-        provider: validRerankModel?.provider || '',
-        model: validRerankModel?.model || '',
+        result.reranking_model = {
+          provider: validRerankModel?.provider || '',
+          model: validRerankModel?.model || '',
+        }
+      }
+      else {
+        result.reranking_model = {
+          provider: '',
+          model: '',
+        }
       }
     }
     else {
-      result.reranking_model = undefined
+      result.reranking_enable = reranking_enable !== false
     }
   }
 
@@ -169,6 +177,8 @@ export const getMultipleRetrievalConfig = (
     if (!reranking_mode) {
       if (validRerankModel?.provider && validRerankModel?.model) {
         result.reranking_mode = RerankingModeEnum.RerankingModel
+        result.reranking_enable = reranking_enable !== false
+
         result.reranking_model = {
           provider: validRerankModel.provider,
           model: validRerankModel.model,
@@ -186,6 +196,8 @@ export const getMultipleRetrievalConfig = (
     if (reranking_mode === RerankingModeEnum.WeightedScore && weights && shouldSetWeightDefaultValue) {
       if (rerankModelIsValid) {
         result.reranking_mode = RerankingModeEnum.RerankingModel
+        result.reranking_enable = reranking_enable !== false
+
         result.reranking_model = {
           provider: validRerankModel.provider || '',
           model: validRerankModel.model || '',

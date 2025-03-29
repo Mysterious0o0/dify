@@ -50,6 +50,7 @@ class DocumentAddByTextApi(DatasetApiResource):
             "indexing_technique", type=str, choices=Dataset.INDEXING_TECHNIQUE_LIST, nullable=False, location="json"
         )
         parser.add_argument("retrieval_model", type=dict, required=False, nullable=False, location="json")
+
         args = parser.parse_args()
         dataset_id = str(dataset_id)
         tenant_id = str(tenant_id)
@@ -115,6 +116,9 @@ class DocumentUpdateByTextApi(DatasetApiResource):
         if not dataset:
             raise ValueError("Dataset is not exist.")
 
+        # indexing_technique is already set in dataset since this is an update
+        args["indexing_technique"] = dataset.indexing_technique
+
         if args["text"]:
             text = args.get("text")
             name = args.get("name")
@@ -161,6 +165,7 @@ class DocumentAddByFileApi(DatasetApiResource):
             args["doc_form"] = "text_model"
         if "doc_language" not in args:
             args["doc_language"] = "English"
+
         # get dataset info
         dataset_id = str(dataset_id)
         tenant_id = str(tenant_id)
@@ -190,7 +195,10 @@ class DocumentAddByFileApi(DatasetApiResource):
             user=current_user,
             source="datasets",
         )
-        data_source = {"type": "upload_file", "info_list": {"file_info_list": {"file_ids": [upload_file.id]}}}
+        data_source = {
+            "type": "upload_file",
+            "info_list": {"data_source_type": "upload_file", "file_info_list": {"file_ids": [upload_file.id]}},
+        }
         args["data_source"] = data_source
         # validate args
         knowledge_config = KnowledgeConfig(**args)
@@ -232,6 +240,10 @@ class DocumentUpdateByFileApi(DatasetApiResource):
 
         if not dataset:
             raise ValueError("Dataset is not exist.")
+
+        # indexing_technique is already set in dataset since this is an update
+        args["indexing_technique"] = dataset.indexing_technique
+
         if "file" in request.files:
             # save file info
             file = request.files["file"]
@@ -254,7 +266,10 @@ class DocumentUpdateByFileApi(DatasetApiResource):
                 raise FileTooLargeError(file_too_large_error.description)
             except services.errors.file.UnsupportedFileTypeError:
                 raise UnsupportedFileTypeError()
-            data_source = {"type": "upload_file", "info_list": {"file_info_list": {"file_ids": [upload_file.id]}}}
+            data_source = {
+                "type": "upload_file",
+                "info_list": {"data_source_type": "upload_file", "file_info_list": {"file_ids": [upload_file.id]}},
+            }
             args["data_source"] = data_source
         # validate args
         args["original_document_id"] = str(document_id)

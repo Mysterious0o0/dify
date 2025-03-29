@@ -1,13 +1,12 @@
 'use client'
 import type { FC } from 'react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import useSWR from 'swr'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import { useDebounce, useDebounceFn } from 'ahooks'
-import { groupBy, omit } from 'lodash-es'
+import { groupBy } from 'lodash-es'
 import { PlusIcon } from '@heroicons/react/24/solid'
-import { RiExternalLinkLine } from '@remixicon/react'
+import { RiDraftLine, RiExternalLinkLine } from '@remixicon/react'
 import AutoDisabledDocument from '../common/document-status-with-action/auto-disabled-document'
 import List from './list'
 import s from './style.module.css'
@@ -15,15 +14,22 @@ import Loading from '@/app/components/base/loading'
 import Button from '@/app/components/base/button'
 import Input from '@/app/components/base/input'
 import { get } from '@/service/base'
-import { createDocument, fetchDocuments } from '@/service/datasets'
+import { createDocument } from '@/service/datasets'
 import { useDatasetDetailContext } from '@/context/dataset-detail'
 import { NotionPageSelectorModal } from '@/app/components/base/notion-page-selector'
 import type { NotionPage } from '@/models/common'
 import type { CreateDocumentReq } from '@/models/datasets'
-import { DataSourceType } from '@/models/datasets'
+import { DataSourceType, ProcessMode } from '@/models/datasets'
 import IndexFailed from '@/app/components/datasets/common/document-status-with-action/index-failed'
 import { useProviderContext } from '@/context/provider-context'
 import cn from '@/utils/classnames'
+import { useDocumentList, useInvalidDocumentDetailKey, useInvalidDocumentList } from '@/service/knowledge/use-document'
+import { useInvalid } from '@/service/use-base'
+import { useChildSegmentListKey, useSegmentListKey } from '@/service/knowledge/use-segment'
+import useEditDocumentMetadata from '../metadata/hooks/use-edit-dataset-metadata'
+import DatasetMetadataDrawer from '../metadata/metadata-dataset/dataset-metadata-drawer'
+import StatusWithAction from '../common/document-status-with-action/status-with-action'
+
 const FolderPlusIcon = ({ className }: React.SVGProps<SVGElement>) => {
   return <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={className ?? ''}>
     <path d="M10.8332 5.83333L9.90355 3.9741C9.63601 3.439 9.50222 3.17144 9.30265 2.97597C9.12615 2.80311 8.91344 2.67164 8.6799 2.59109C8.41581 2.5 8.11668 2.5 7.51841 2.5H4.33317C3.39975 2.5 2.93304 2.5 2.57652 2.68166C2.26292 2.84144 2.00795 3.09641 1.84816 3.41002C1.6665 3.76654 1.6665 4.23325 1.6665 5.16667V5.83333M1.6665 5.83333H14.3332C15.7333 5.83333 16.4334 5.83333 16.9681 6.10582C17.4386 6.3455 17.821 6.72795 18.0607 7.19836C18.3332 7.73314 18.3332 8.4332 18.3332 9.83333V13.5C18.3332 14.9001 18.3332 15.6002 18.0607 16.135C17.821 16.6054 17.4386 16.9878 16.9681 17.2275C16.4334 17.5 15.7333 17.5 14.3332 17.5H5.6665C4.26637 17.5 3.56631 17.5 3.03153 17.2275C2.56112 16.9878 2.17867 16.6054 1.93899 16.135C1.6665 15.6002 1.6665 14.9001 1.6665 13.5V5.83333ZM9.99984 14.1667V9.16667M7.49984 11.6667H12.4998" stroke="#667085" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -58,7 +64,7 @@ const EmptyElement: FC<{ canAdd: boolean; onClick: () => void; type?: 'upload' |
       <div className={s.emptySymbolIconWrapper}>
         {type === 'upload' ? <FolderPlusIcon /> : <NotionIcon />}
       </div>
-      <span className={s.emptyTitle}>{t('datasetDocuments.list.empty.title')}<ThreeDotsIcon className='inline relative -top-3 -left-1.5' /></span>
+      <span className={s.emptyTitle}>{t('datasetDocuments.list.empty.title')}<ThreeDotsIcon className='relative -left-1.5 -top-3 inline' /></span>
       <div className={s.emptyTip}>
         {t(`datasetDocuments.list.empty.${type}.tip`)}
       </div>
@@ -74,7 +80,7 @@ type IDocumentsProps = {
 }
 
 export const fetcher = (url: string) => get(url, {}, {})
-const DEFAULT_LIMIT = 15
+const DEFAULT_LIMIT = 10
 
 const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
   const { t } = useTranslation()
@@ -95,30 +101,40 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
 
   const debouncedSearchValue = useDebounce(searchValue, { wait: 500 })
 
-  const query = useMemo(() => {
-    return { page: currPage + 1, limit, keyword: debouncedSearchValue, fetch: isDataSourceNotion ? true : '' }
-  }, [currPage, debouncedSearchValue, isDataSourceNotion, limit])
-
-  const { data: documentsRes, error, mutate, isLoading: isListLoading } = useSWR(
-    {
-      action: 'fetchDocuments',
-      datasetId,
-      params: query,
+  const { data: documentsRes, isFetching: isListLoading } = useDocumentList({
+    datasetId,
+    query: {
+      page: currPage + 1,
+      limit,
+      keyword: debouncedSearchValue,
     },
-    apiParams => fetchDocuments(omit(apiParams, 'action')),
-    { refreshInterval: (isDataSourceNotion && timerCanRun) ? 2500 : 0 },
-  )
+    refetchInterval: (isDataSourceNotion && timerCanRun) ? 2500 : 0,
+  })
 
-  const [isMuting, setIsMuting] = useState(false)
+  const invalidDocumentList = useInvalidDocumentList(datasetId)
+
   useEffect(() => {
-    if (!isListLoading && isMuting)
-      setIsMuting(false)
-  }, [isListLoading, isMuting])
+    if (documentsRes) {
+      const totalPages = Math.ceil(documentsRes.total / limit)
+      if (totalPages < currPage + 1)
+        setCurrPage(totalPages === 0 ? 0 : totalPages - 1)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentsRes])
+
+  const invalidDocumentDetail = useInvalidDocumentDetailKey()
+  const invalidChunkList = useInvalid(useSegmentListKey)
+  const invalidChildChunkList = useInvalid(useChildSegmentListKey)
 
   const handleUpdate = useCallback(() => {
-    setIsMuting(true)
-    mutate()
-  }, [mutate])
+    invalidDocumentList()
+    invalidDocumentDetail()
+    setTimeout(() => {
+      invalidChunkList()
+      invalidChildChunkList()
+    }, 5000)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const documentsWithProgress = useMemo(() => {
     let completedNum = 0
@@ -161,8 +177,6 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
     router.push(`/datasets/${datasetId}/documents/create`)
   }
 
-  const isLoading = isListLoading // !documentsRes && !error
-
   const handleSaveNotionPageSelected = async (selectedPages: NotionPage[]) => {
     const workspacesMap = groupBy(selectedPages, 'workspace_id')
     const workspaces = Object.keys(workspacesMap).map((workspaceId) => {
@@ -195,7 +209,7 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
       indexing_technique: dataset?.indexing_technique,
       process_rule: {
         rules: {},
-        mode: 'automatic',
+        mode: ProcessMode.general,
       },
     } as CreateDocumentReq
 
@@ -203,7 +217,7 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
       datasetId,
       body: params,
     })
-    mutate()
+    invalidDocumentList()
     setTimerCanRun(true)
     // mutateDatasetIndexingStatus(undefined, { revalidate: true })
     setNotionPageSelectorModalVisible(false)
@@ -220,23 +234,40 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
     handleSearch()
   }
 
+  const {
+    isShowEditModal: isShowEditMetadataModal,
+    showEditModal: showEditMetadataModal,
+    hideEditModal: hideEditMetadataModal,
+    datasetMetaData,
+    handleAddMetaData,
+    handleRename,
+    handleDeleteMetaData,
+    builtInEnabled,
+    setBuiltInEnabled,
+    builtInMetaData,
+  } = useEditDocumentMetadata({
+    datasetId,
+    dataset,
+    onUpdateDocList: invalidDocumentList,
+  })
+
   return (
-    <div className='flex flex-col h-full overflow-y-auto'>
+    <div className='flex h-full flex-col overflow-y-auto'>
       <div className='flex flex-col justify-center gap-1 px-6 pt-4'>
         <h1 className='text-base font-semibold text-text-primary'>{t('datasetDocuments.list.title')}</h1>
-        <div className='flex items-center text-sm font-normal text-text-tertiary space-x-0.5'>
+        <div className='flex items-center space-x-0.5 text-sm font-normal text-text-tertiary'>
           <span>{t('datasetDocuments.list.desc')}</span>
           <a
             className='flex items-center text-text-accent'
             target='_blank'
             href='https://docs.dify.ai/guides/knowledge-base/integrate-knowledge-within-application'>
             <span>{t('datasetDocuments.list.learnMore')}</span>
-            <RiExternalLinkLine className='w-3 h-3' />
+            <RiExternalLinkLine className='h-3 w-3' />
           </a>
         </div>
       </div>
-      <div className='flex flex-col px-6 py-4 flex-1'>
-        <div className='flex items-center justify-between flex-wrap'>
+      <div className='flex flex-1 flex-col px-6 py-4'>
+        <div className='flex flex-wrap items-center justify-between'>
           <Input
             showLeftIcon
             showClearIcon
@@ -245,12 +276,31 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
             onChange={e => handleInputChange(e.target.value)}
             onClear={() => handleInputChange('')}
           />
-          <div className='flex gap-2 justify-center items-center !h-8'>
+          <div className='flex !h-8 items-center justify-center gap-2'>
             {!isFreePlan && <AutoDisabledDocument datasetId={datasetId} />}
             <IndexFailed datasetId={datasetId} />
+            {!embeddingAvailable && <StatusWithAction type='warning' description={t('dataset.embeddingModelNotAvailable')} />}
+            {embeddingAvailable && (
+              <Button variant='secondary' className='shrink-0' onClick={showEditMetadataModal}>
+                <RiDraftLine className='mr-1 size-4' />
+                {t('dataset.metadata.metadata')}
+              </Button>
+            )}
+            {isShowEditMetadataModal && (
+              <DatasetMetadataDrawer
+                userMetadata={datasetMetaData || []}
+                onClose={hideEditMetadataModal}
+                onAdd={handleAddMetaData}
+                onRename={handleRename}
+                onRemove={handleDeleteMetaData}
+                builtInMetadata={builtInMetaData || []}
+                isBuiltInEnabled={!!builtInEnabled}
+                onIsBuiltInEnabledChange={setBuiltInEnabled}
+              />
+            )}
             {embeddingAvailable && (
               <Button variant='primary' onClick={routeToDocCreate} className='shrink-0'>
-                <PlusIcon className={cn('h-4 w-4 mr-2 stroke-current')} />
+                <PlusIcon className={cn('mr-2 h-4 w-4 stroke-current')} />
                 {isDataSourceNotion && t('datasetDocuments.list.addPages')}
                 {isDataSourceWeb && t('datasetDocuments.list.addUrl')}
                 {(!dataset?.data_source_type || isDataSourceFile) && t('datasetDocuments.list.addFile')}
@@ -258,7 +308,7 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
             )}
           </div>
         </div>
-        {(isLoading && !isMuting)
+        {isListLoading
           ? <Loading type='app' />
           : total > 0
             ? <List
@@ -275,6 +325,7 @@ const Documents: FC<IDocumentsProps> = ({ datasetId }) => {
                 current: currPage,
                 onChange: setCurrPage,
               }}
+              onManageMetadata={showEditMetadataModal}
             />
             : <EmptyElement canAdd={embeddingAvailable} onClick={routeToDocCreate} type={isDataSourceNotion ? 'sync' : 'upload'} />
         }

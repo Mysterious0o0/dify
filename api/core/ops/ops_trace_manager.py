@@ -17,6 +17,7 @@ from core.ops.entities.config_entity import (
     OPS_FILE_PATH,
     LangfuseConfig,
     LangSmithConfig,
+    OpikConfig,
     TracingProviderEnum,
 )
 from core.ops.entities.trace_entity import (
@@ -39,6 +40,13 @@ from models.model import App, AppModelConfig, Conversation, Message, MessageFile
 from models.workflow import WorkflowAppLog, WorkflowRun
 from tasks.ops_trace_task import process_trace_tasks
 
+
+def build_opik_trace_instance(config: OpikConfig):
+    from core.ops.opik_trace.opik_trace import OpikDataTrace
+
+    return OpikDataTrace(config)
+
+
 provider_config_map: dict[str, dict[str, Any]] = {
     TracingProviderEnum.LANGFUSE.value: {
         "config_class": LangfuseConfig,
@@ -51,6 +59,12 @@ provider_config_map: dict[str, dict[str, Any]] = {
         "secret_keys": ["api_key"],
         "other_keys": ["project", "endpoint"],
         "trace_instance": LangSmithDataTrace,
+    },
+    TracingProviderEnum.OPIK.value: {
+        "config_class": OpikConfig,
+        "secret_keys": ["api_key"],
+        "other_keys": ["project", "url", "workspace"],
+        "trace_instance": lambda config: build_opik_trace_instance(config),
     },
 }
 
@@ -206,6 +220,8 @@ class OpsTraceManager:
                 provider_config_map[tracing_provider]["trace_instance"],
                 provider_config_map[tracing_provider]["config_class"],
             )
+            if not decrypt_trace_config:
+                return None
             tracing_instance = trace_instance(config_class(**decrypt_trace_config))
             return tracing_instance
 

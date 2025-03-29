@@ -90,6 +90,12 @@ class Vector:
                 from core.rag.datasource.vdb.elasticsearch.elasticsearch_vector import ElasticSearchVectorFactory
 
                 return ElasticSearchVectorFactory
+            case VectorType.ELASTICSEARCH_JA:
+                from core.rag.datasource.vdb.elasticsearch.elasticsearch_ja_vector import (
+                    ElasticSearchJaVectorFactory,
+                )
+
+                return ElasticSearchJaVectorFactory
             case VectorType.TIDB_VECTOR:
                 from core.rag.datasource.vdb.tidb_vector.tidb_vector import TiDBVectorFactory
 
@@ -142,6 +148,14 @@ class Vector:
                 from core.rag.datasource.vdb.oceanbase.oceanbase_vector import OceanBaseVectorFactory
 
                 return OceanBaseVectorFactory
+            case VectorType.OPENGAUSS:
+                from core.rag.datasource.vdb.opengauss.opengauss import OpenGaussFactory
+
+                return OpenGaussFactory
+            case VectorType.TABLESTORE:
+                from core.rag.datasource.vdb.tablestore.tablestore_vector import TableStoreVectorFactory
+
+                return TableStoreVectorFactory
             case _:
                 raise ValueError(f"Vector store {vector_type} is not supported.")
 

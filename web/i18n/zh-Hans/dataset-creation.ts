@@ -1,8 +1,7 @@
 const translation = {
   steps: {
     header: {
-      creation: '创建知识库',
-      update: '上传文件',
+      fallbackRoute: '知识库',
     },
     one: '选择数据源',
     two: '文本分段与清洗',
@@ -68,6 +67,8 @@ const translation = {
       jinaReaderNotConfigured: 'Jina Reader 未配置',
       jinaReaderNotConfiguredDescription: '请配置 Jina Reader 的免费 API 密钥以访问它。',
       configure: '配置',
+      configureFirecrawl: '配置 Firecrawl',
+      configureJinaReader: '配置 Jina Reader',
       run: '运行',
       firecrawlTitle: '使用 🔥Firecrawl 提取网页内容',
       firecrawlDoc: 'Firecrawl 文档',
@@ -101,7 +102,7 @@ const translation = {
     custom: '自定义',
     customDescription: '自定义分段规则、分段长度以及预处理规则等参数',
     general: '通用',
-    generalTip: '通用文本分块模式，检索和回忆的块是相同的',
+    generalTip: '通用文本分块模式，检索和召回的块是相同的',
     parentChild: '父子分段',
     parentChildTip: '使用父子模式时，子块用于检索，父块用作上下文',
     parentChunkForContext: '父块用作上下文',
