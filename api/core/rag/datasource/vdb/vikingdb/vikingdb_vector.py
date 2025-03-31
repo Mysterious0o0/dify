@@ -177,11 +177,7 @@ class VikingDBVector(BaseVector):
             query_vector, limit=kwargs.get("top_k", 4)
         )
         score_threshold = float(kwargs.get("score_threshold") or 0.0)
-        docs = self._get_search_res(results, score_threshold)
-        document_ids_filter = kwargs.get("document_ids_filter")
-        if document_ids_filter:
-            docs = [doc for doc in docs if doc.metadata.get("document_id") in document_ids_filter]
-        return docs
+        return self._get_search_res(results, score_threshold)
 
     def _get_search_res(self, results, score_threshold) -> list[Document]:
         if len(results) == 0:

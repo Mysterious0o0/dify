@@ -2,16 +2,12 @@ import React from 'react'
 import Main from '@/app/components/datasets/documents'
 
 export type IProps = {
-  params: Promise<{ datasetId: string }>
+  params: { datasetId: string }
 }
 
-const Documents = async (props: IProps) => {
-  const params = await props.params
-
-  const {
-    datasetId,
-  } = params
-
+const Documents = async ({
+  params: { datasetId },
+}: IProps) => {
   return (
     <Main datasetId={datasetId} />
   )

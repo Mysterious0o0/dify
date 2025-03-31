@@ -70,7 +70,7 @@ const DatasetList: FC<Props> = ({
           )
         })
         : (
-          <div className='cursor-default select-none rounded-lg bg-gray-50 p-3 text-center text-xs text-gray-500'>
+          <div className='p-3 text-xs text-center text-gray-500 rounded-lg cursor-default select-none bg-gray-50'>
             {t('appDebug.datasetConfig.knowledgeTip')}
           </div>
         )

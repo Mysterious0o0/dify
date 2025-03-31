@@ -4,7 +4,7 @@ import { useStoreApi } from 'reactflow'
 
 import type { ValueSelector, Var } from '../../types'
 import { InputVarType, VarType } from '../../types'
-import type { DocExtractorNodeType } from './types'
+import { type DocExtractorNodeType } from './types'
 import useNodeCrud from '@/app/components/workflow/nodes/_base/hooks/use-node-crud'
 import useOneStepRun from '@/app/components/workflow/nodes/_base/hooks/use-one-step-run'
 import {
@@ -32,8 +32,6 @@ const useConfig = (id: string, payload: DocExtractorNodeType) => {
   const currentNode = getNodes().find(n => n.id === id)
   const isInIteration = payload.isInIteration
   const iterationNode = isInIteration ? getNodes().find(n => n.id === currentNode!.parentId) : null
-  const isInLoop = payload.isInLoop
-  const loopNode = isInLoop ? getNodes().find(n => n.id === currentNode!.parentId) : null
   const availableNodes = useMemo(() => {
     return getBeforeNodesInSameBranch(id)
   }, [getBeforeNodesInSameBranch, id])
@@ -41,14 +39,14 @@ const useConfig = (id: string, payload: DocExtractorNodeType) => {
   const { getCurrentVariableType } = useWorkflowVariables()
   const getType = useCallback((variable?: ValueSelector) => {
     const varType = getCurrentVariableType({
-      parentNode: isInIteration ? iterationNode : loopNode,
+      parentNode: iterationNode,
       valueSelector: variable || [],
       availableNodes,
       isChatMode,
       isConstant: false,
     })
     return varType
-  }, [getCurrentVariableType, isInIteration, availableNodes, isChatMode, iterationNode, loopNode])
+  }, [getCurrentVariableType, availableNodes, isChatMode, iterationNode])
 
   const handleVarChanges = useCallback((variable: ValueSelector | string) => {
     const newInputs = produce(inputs, (draft) => {

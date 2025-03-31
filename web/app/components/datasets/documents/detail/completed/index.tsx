@@ -357,7 +357,6 @@ const Completed: FC<ICompletedProps> = ({
           if (seg.id === segmentId) {
             seg.answer = res.data.answer
             seg.content = res.data.content
-            seg.sign_content = res.data.sign_content
             seg.keywords = res.data.keywords
             seg.word_count = res.data.word_count
             seg.hit_count = res.data.hit_count
@@ -410,9 +409,9 @@ const Completed: FC<ICompletedProps> = ({
     setSelectedSegmentIds((prev) => {
       const currentAllSegIds = segments.map(seg => seg.id)
       const prevSelectedIds = prev.filter(item => !currentAllSegIds.includes(item))
-      return [...prevSelectedIds, ...(isAllSelected ? [] : currentAllSegIds)]
+      return [...prevSelectedIds, ...((isAllSelected || selectedSegmentIds.length > 0) ? [] : currentAllSegIds)]
     })
-  }, [segments, isAllSelected])
+  }, [segments, isAllSelected, selectedSegmentIds])
 
   const totalText = useMemo(() => {
     const isSearch = searchValue !== '' || selectedStatus !== 'all'
@@ -586,7 +585,7 @@ const Completed: FC<ICompletedProps> = ({
           onCheck={onSelectedAll}
           disabled={isLoadingSegmentList}
         />
-        <div className={'system-sm-semibold-uppercase flex-1 pl-5 text-text-secondary'}>{totalText}</div>
+        <div className={'system-sm-semibold-uppercase pl-5 text-text-secondary flex-1'}>{totalText}</div>
         <SimpleSelect
           onSelect={onChangeStatus}
           items={statusList.current}
@@ -606,14 +605,14 @@ const Completed: FC<ICompletedProps> = ({
           onChange={e => handleInputChange(e.target.value)}
           onClear={() => handleInputChange('')}
         />
-        <Divider type='vertical' className='mx-3 h-3.5' />
+        <Divider type='vertical' className='h-3.5 mx-3' />
         <DisplayToggle isCollapsed={isCollapsed} toggleCollapsed={() => setIsCollapsed(!isCollapsed)} />
       </div>}
       {/* Segment list */}
       {
         isFullDocMode
           ? <div className={cn(
-            'flex grow flex-col overflow-x-hidden',
+            'flex flex-col grow overflow-x-hidden',
             (isLoadingSegmentList || isLoadingChildSegmentList) ? 'overflow-y-hidden' : 'overflow-y-auto',
           )}>
             <SegmentCard
@@ -657,7 +656,7 @@ const Completed: FC<ICompletedProps> = ({
           />
       }
       {/* Pagination */}
-      <Divider type='horizontal' className='mx-6 my-0 h-[1px] w-auto bg-divider-subtle' />
+      <Divider type='horizontal' className='w-auto h-[1px] my-0 mx-6 bg-divider-subtle' />
       <Pagination
         current={currentPage - 1}
         onChange={cur => setCurrentPage(cur + 1)}
@@ -723,7 +722,7 @@ const Completed: FC<ICompletedProps> = ({
       {/* Batch Action Buttons */}
       {selectedSegmentIds.length > 0
         && <BatchAction
-          className='absolute bottom-16 left-0 z-20'
+          className='absolute left-0 bottom-16 z-20'
           selectedIds={selectedSegmentIds}
           onBatchEnable={onChangeSwitch.bind(null, true, '')}
           onBatchDisable={onChangeSwitch.bind(null, false, '')}

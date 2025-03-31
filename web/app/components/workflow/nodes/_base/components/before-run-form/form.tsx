@@ -1,6 +1,6 @@
 'use client'
 import type { FC } from 'react'
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import produce from 'immer'
 import type { InputVar } from '../../../../types'
 import FormItem from './form-item'
@@ -46,20 +46,17 @@ const Form: FC<Props> = ({
 
     return m
   }, [inputs])
-  const valuesRef = useRef(values)
-  useEffect(() => {
-    valuesRef.current = values
-  }, [values])
+
   const handleChange = useCallback((key: string) => {
     const mKeys = mapKeysWithSameValueSelector.get(key) ?? [key]
     return (value: any) => {
-      const newValues = produce(valuesRef.current, (draft) => {
+      const newValues = produce(values, (draft) => {
         for (const k of mKeys)
           draft[k] = value
       })
       onChange(newValues)
     }
-  }, [valuesRef, onChange, mapKeysWithSameValueSelector])
+  }, [values, onChange, mapKeysWithSameValueSelector])
   const isArrayLikeType = [InputVarType.contexts, InputVarType.iterator].includes(inputs[0]?.type)
   const isContext = inputs[0]?.type === InputVarType.contexts
   const handleAddContext = useCallback(() => {
@@ -74,7 +71,7 @@ const Form: FC<Props> = ({
     <div className={cn(className, 'space-y-2')}>
       {label && (
         <div className='mb-1 flex items-center justify-between'>
-          <div className='system-xs-medium-uppercase flex h-6 items-center text-text-tertiary'>{label}</div>
+          <div className='flex items-center h-6 system-xs-medium-uppercase text-text-tertiary'>{label}</div>
           {isArrayLikeType && (
             <AddButton onClick={handleAddContext} />
           )}

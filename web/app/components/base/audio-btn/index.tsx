@@ -87,18 +87,18 @@ const AudioBtn = ({
       >
         <button
           disabled={audioState === 'loading'}
-          className={`box-border flex h-6 w-6 cursor-pointer items-center justify-center ${isAudition ? 'p-0.5' : 'rounded-md bg-white p-0'}`}
+          className={`box-border w-6 h-6 flex items-center justify-center cursor-pointer ${isAudition ? 'p-0.5' : 'p-0 rounded-md bg-white'}`}
           onClick={handleToggle}
         >
           {audioState === 'loading'
             ? (
-              <div className='flex h-full w-full items-center justify-center rounded-md'>
+              <div className='w-full h-full rounded-md flex items-center justify-center'>
                 <Loading />
               </div>
             )
             : (
-              <div className={`flex h-full w-full items-center justify-center rounded-md ${!isAudition ? 'hover:bg-gray-50' : 'hover:bg-gray-50'}`}>
-                <div className={`h-4 w-4 ${(audioState === 'playing') ? s.pauseIcon : s.playIcon}`}></div>
+              <div className={`w-full h-full rounded-md flex items-center justify-center ${!isAudition ? 'hover:bg-gray-50' : 'hover:bg-gray-50'}`}>
+                <div className={`w-4 h-4 ${(audioState === 'playing') ? s.pauseIcon : s.playIcon}`}></div>
               </div>
             )}
         </button>

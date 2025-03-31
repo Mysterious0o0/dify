@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { type ForwardedRef, useMemo } from 'react'
 import { useDocumentContext } from '../index'
 import SegmentCard from './segment-card'
 import Empty from './common/empty'
@@ -25,25 +25,22 @@ type ISegmentListProps = {
   onClearFilter: () => void
 }
 
-const SegmentList = (
-  {
-    ref,
-    isLoading,
-    items,
-    selectedSegmentIds,
-    onSelected,
-    onClick: onClickCard,
-    onChangeSwitch,
-    onDelete,
-    onDeleteChildChunk,
-    handleAddNewChildChunk,
-    onClickSlice,
-    archived,
-    embeddingAvailable,
-    onClearFilter,
-  }: ISegmentListProps & {
-    ref: React.RefObject<unknown>;
-  },
+const SegmentList = React.forwardRef(({
+  isLoading,
+  items,
+  selectedSegmentIds,
+  onSelected,
+  onClick: onClickCard,
+  onChangeSwitch,
+  onDelete,
+  onDeleteChildChunk,
+  handleAddNewChildChunk,
+  onClickSlice,
+  archived,
+  embeddingAvailable,
+  onClearFilter,
+}: ISegmentListProps,
+ref: ForwardedRef<HTMLDivElement>,
 ) => {
   const mode = useDocumentContext(s => s.mode)
   const parentMode = useDocumentContext(s => s.parentMode)
@@ -66,7 +63,7 @@ const SegmentList = (
     )
   }
   return (
-    <div ref={ref} className={'flex grow flex-col overflow-y-auto'}>
+    <div ref={ref} className={'flex flex-col grow overflow-y-auto'}>
       {
         items.map((segItem) => {
           const isLast = items[items.length - 1].id === segItem.id
@@ -79,11 +76,11 @@ const SegmentList = (
             <div key={segItem.id} className='flex items-start gap-x-2'>
               <Checkbox
                 key={`${segItem.id}-checkbox`}
-                className='mt-3.5 shrink-0'
+                className='shrink-0 mt-3.5'
                 checked={selectedSegmentIds.includes(segItem.id)}
                 onCheck={() => onSelected(segItem.id)}
               />
-              <div className='min-w-0 grow'>
+              <div className='grow min-w-0'>
                 <SegmentCard
                   key={`${segItem.id}-card`}
                   detail={segItem}
@@ -103,7 +100,7 @@ const SegmentList = (
                   }}
                 />
                 {!isLast && <div className='w-full px-3'>
-                  <Divider type='horizontal' className='my-1 bg-divider-subtle' />
+                  <Divider type='horizontal' className='bg-divider-subtle my-1' />
                 </div>}
               </div>
             </div>
@@ -112,7 +109,7 @@ const SegmentList = (
       }
     </div>
   )
-}
+})
 
 SegmentList.displayName = 'SegmentList'
 

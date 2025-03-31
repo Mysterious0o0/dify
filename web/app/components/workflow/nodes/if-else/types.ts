@@ -57,7 +57,6 @@ export type IfElseNodeType = CommonNodeType & {
   conditions?: Condition[]
   cases: CaseItem[]
   isInIteration: boolean
-  isInLoop: boolean
 }
 
 export type HandleAddCondition = (caseId: string, valueSelector: ValueSelector, varItem: Var) => void

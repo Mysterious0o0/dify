@@ -4,7 +4,7 @@ import QueryBlockComponent from './component'
 
 export type SerializedNode = SerializedLexicalNode
 
-export class QueryBlockNode extends DecoratorNode<React.JSX.Element> {
+export class QueryBlockNode extends DecoratorNode<JSX.Element> {
   static getType(): string {
     return 'query-block'
   }
@@ -27,7 +27,7 @@ export class QueryBlockNode extends DecoratorNode<React.JSX.Element> {
     return false
   }
 
-  decorate(): React.JSX.Element {
+  decorate(): JSX.Element {
     return <QueryBlockComponent nodeKey={this.getKey()} />
   }
 

@@ -25,14 +25,14 @@ const Container = ({
 }: ContainerProps) => {
   return (
     <div className={cn(
-      'space-y-0.5 rounded-[10px] bg-background-section-burn p-0.5',
+      'p-0.5 space-y-0.5 rounded-[10px] bg-background-section-burn',
       isFailBranch && 'border-[0.5px] border-state-warning-hover-alt bg-state-warning-hover',
     )}>
       {
         branchName && (
           <div
             className={cn(
-              'system-2xs-semibold-uppercase flex items-center truncate px-2 text-text-tertiary',
+              'flex items-center px-2 system-2xs-semibold-uppercase text-text-tertiary truncate',
               isFailBranch && 'text-text-warning',
             )}
             title={branchName}

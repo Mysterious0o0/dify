@@ -1,21 +1,22 @@
 'use client'
-import type { FC, ReactNode } from 'react'
+import type { FC } from 'react'
 import React from 'react'
 import {
   RiArrowDownSLine,
 } from '@remixicon/react'
 import { useBoolean } from 'ahooks'
+import type { DefaultTFuncReturn } from 'i18next'
 import cn from '@/utils/classnames'
 import Tooltip from '@/app/components/base/tooltip'
 
 type Props = {
   className?: string
-  title: ReactNode
-  tooltip?: ReactNode
+  title: JSX.Element | string | DefaultTFuncReturn
+  tooltip?: React.ReactNode
   isSubTitle?: boolean
   supportFold?: boolean
-  children?: React.JSX.Element | string | null
-  operations?: React.JSX.Element
+  children?: JSX.Element | string | null
+  operations?: JSX.Element
   inline?: boolean
 }
 
@@ -33,11 +34,11 @@ const Field: FC<Props> = ({
     toggle: toggleFold,
   }] = useBoolean(true)
   return (
-    <div className={cn(className, inline && 'flex w-full items-center justify-between')}>
+    <div className={cn(className, inline && 'flex justify-between items-center w-full')}>
       <div
         onClick={() => supportFold && toggleFold()}
-        className={cn('flex items-center justify-between', supportFold && 'cursor-pointer')}>
-        <div className='flex h-6 items-center'>
+        className={cn('flex justify-between items-center', supportFold && 'cursor-pointer')}>
+        <div className='flex items-center h-6'>
           <div className={cn(isSubTitle ? 'system-xs-medium-uppercase text-text-tertiary' : 'system-sm-semibold-uppercase text-text-secondary')}>{title}</div>
           {tooltip && (
             <Tooltip
@@ -50,7 +51,7 @@ const Field: FC<Props> = ({
         <div className='flex'>
           {operations && <div>{operations}</div>}
           {supportFold && (
-            <RiArrowDownSLine className='h-4 w-4 cursor-pointer text-text-tertiary transition-transform' style={{ transform: fold ? 'rotate(-90deg)' : 'rotate(0deg)' }} />
+            <RiArrowDownSLine className='w-4 h-4 text-text-tertiary cursor-pointer transform transition-transform' style={{ transform: fold ? 'rotate(-90deg)' : 'rotate(0deg)' }} />
           )}
         </div>
       </div>

@@ -11,7 +11,7 @@ type WorkflowProviderProps = {
   children: React.ReactNode
 }
 export const WorkflowContextProvider = ({ children }: WorkflowProviderProps) => {
-  const storeRef = useRef<WorkflowStore | undefined>(undefined)
+  const storeRef = useRef<WorkflowStore>()
 
   if (!storeRef.current)
     storeRef.current = createWorkflowStore()

@@ -12,11 +12,13 @@ import useOneStepRun from '../_base/hooks/use-one-step-run'
 import useConfigVision from '../../hooks/use-config-vision'
 import type { Param, ParameterExtractorNodeType, ReasoningModeType } from './types'
 import { useModelListAndDefaultModelAndCurrentProviderAndModel, useTextGenerationCurrentProviderAndModelAndModelList } from '@/app/components/header/account-setting/model-provider-page/hooks'
-import { ModelTypeEnum } from '@/app/components/header/account-setting/model-provider-page/declarations'
+import {
+  ModelFeatureEnum,
+  ModelTypeEnum,
+} from '@/app/components/header/account-setting/model-provider-page/declarations'
 import useNodeCrud from '@/app/components/workflow/nodes/_base/hooks/use-node-crud'
 import { checkHasQueryBlock } from '@/app/components/base/prompt-editor/constants'
 import useAvailableVarList from '@/app/components/workflow/nodes/_base/hooks/use-available-var-list'
-import { supportFunctionCall } from '@/utils/tool-call'
 
 const useConfig = (id: string, payload: ParameterExtractorNodeType) => {
   const { nodesReadOnly: readOnly } = useNodesReadOnly()
@@ -157,14 +159,10 @@ const useConfig = (id: string, payload: ParameterExtractorNodeType) => {
     },
   )
 
-  const isSupportFunctionCall = supportFunctionCall(currModel?.features)
+  const isSupportFunctionCall = currModel?.features?.includes(ModelFeatureEnum.toolCall) || currModel?.features?.includes(ModelFeatureEnum.multiToolCall)
 
   const filterInputVar = useCallback((varPayload: Var) => {
     return [VarType.number, VarType.string].includes(varPayload.type)
-  }, [])
-
-  const filterVisionInputVar = useCallback((varPayload: Var) => {
-    return [VarType.file, VarType.arrayFile].includes(varPayload.type)
   }, [])
 
   const {
@@ -173,13 +171,6 @@ const useConfig = (id: string, payload: ParameterExtractorNodeType) => {
   } = useAvailableVarList(id, {
     onlyLeafNodeVar: false,
     filterVar: filterInputVar,
-  })
-
-  const {
-    availableVars: availableVisionVars,
-  } = useAvailableVarList(id, {
-    onlyLeafNodeVar: false,
-    filterVar: filterVisionInputVar,
   })
 
   const handleCompletionParamsChange = useCallback((newParams: Record<string, any>) => {
@@ -232,15 +223,13 @@ const useConfig = (id: string, payload: ParameterExtractorNodeType) => {
     handleRun,
     handleStop,
     runInputData,
-    runInputDataRef,
     setRunInputData,
     runResult,
   } = useOneStepRun<ParameterExtractorNodeType>({
     id,
     data: inputs,
     defaultRunInputData: {
-      'query': '',
-      '#files#': [],
+      query: '',
     },
   })
 
@@ -257,14 +246,6 @@ const useConfig = (id: string, payload: ParameterExtractorNodeType) => {
   const setInputVarValues = useCallback((newPayload: Record<string, any>) => {
     setRunInputData(newPayload)
   }, [setRunInputData])
-
-  const visionFiles = runInputData['#files#']
-  const setVisionFiles = useCallback((newFiles: any[]) => {
-    setRunInputData({
-      ...runInputDataRef.current,
-      '#files#': newFiles,
-    })
-  }, [runInputDataRef, setRunInputData])
 
   return {
     readOnly,
@@ -283,7 +264,6 @@ const useConfig = (id: string, payload: ParameterExtractorNodeType) => {
     hasSetBlockStatus,
     availableVars,
     availableNodesWithParent,
-    availableVisionVars,
     isSupportFunctionCall,
     handleReasoningModeChange,
     handleMemoryChange,
@@ -299,8 +279,6 @@ const useConfig = (id: string, payload: ParameterExtractorNodeType) => {
     handleStop,
     runResult,
     setInputVarValues,
-    visionFiles,
-    setVisionFiles,
   }
 }
 

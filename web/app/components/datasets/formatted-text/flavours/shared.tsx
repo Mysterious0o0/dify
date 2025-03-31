@@ -1,32 +1,22 @@
-import type { ComponentProps, FC } from 'react'
+import { type ComponentProps, type FC, forwardRef } from 'react'
 import classNames from '@/utils/classnames'
 
 const baseStyle = 'py-[3px]'
 
 export type SliceContainerProps = ComponentProps<'span'>
 
-export const SliceContainer: FC<SliceContainerProps> = (
-  {
-    ref,
-    ...props
-  },
-) => {
+export const SliceContainer: FC<SliceContainerProps> = forwardRef((props, ref) => {
   const { className, ...rest } = props
   return <span {...rest} ref={ref} className={classNames(
     'group align-bottom mr-1 select-none text-sm',
     className,
   )} />
-}
+})
 SliceContainer.displayName = 'SliceContainer'
 
 export type SliceLabelProps = ComponentProps<'span'> & { labelInnerClassName?: string }
 
-export const SliceLabel: FC<SliceLabelProps> = (
-  {
-    ref,
-    ...props
-  },
-) => {
+export const SliceLabel: FC<SliceLabelProps> = forwardRef((props, ref) => {
   const { className, children, labelInnerClassName, ...rest } = props
   return <span {...rest} ref={ref} className={classNames(
     baseStyle,
@@ -37,17 +27,12 @@ export const SliceLabel: FC<SliceLabelProps> = (
       {children}
     </span>
   </span>
-}
+})
 SliceLabel.displayName = 'SliceLabel'
 
 export type SliceContentProps = ComponentProps<'span'>
 
-export const SliceContent: FC<SliceContentProps> = (
-  {
-    ref,
-    ...props
-  },
-) => {
+export const SliceContent: FC<SliceContentProps> = forwardRef((props, ref) => {
   const { className, children, ...rest } = props
   return <span {...rest} ref={ref} className={classNames(
     baseStyle,
@@ -56,17 +41,12 @@ export const SliceContent: FC<SliceContentProps> = (
   )}>
     {children}
   </span>
-}
+})
 SliceContent.displayName = 'SliceContent'
 
 export type SliceDividerProps = ComponentProps<'span'>
 
-export const SliceDivider: FC<SliceDividerProps> = (
-  {
-    ref,
-    ...props
-  },
-) => {
+export const SliceDivider: FC<SliceDividerProps> = forwardRef((props, ref) => {
   const { className, ...rest } = props
   return <span {...rest} ref={ref} className={classNames(
     baseStyle,
@@ -76,5 +56,5 @@ export const SliceDivider: FC<SliceDividerProps> = (
     {/* use a zero-width space to make the hover area bigger */}
     &#8203;
   </span>
-}
+})
 SliceDivider.displayName = 'SliceDivider'

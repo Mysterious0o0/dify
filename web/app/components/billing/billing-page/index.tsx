@@ -4,10 +4,10 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import useSWR from 'swr'
 import {
-  RiArrowRightUpLine,
+  RiExternalLinkLine,
 } from '@remixicon/react'
 import PlanComp from '../plan'
-import Divider from '@/app/components/base/divider'
+import { ReceiptList } from '../../base/icons/src/vender/line/financeAndECommerce'
 import { fetchBillingUrl } from '@/service/billing'
 import { useAppContext } from '@/context/app-context'
 import { useProviderContext } from '@/context/provider-context'
@@ -25,13 +25,13 @@ const Billing: FC = () => {
     <div>
       <PlanComp loc={'billing-page'} />
       {enableBilling && isCurrentWorkspaceManager && billingUrl && (
-        <>
-          <Divider className='my-4' />
-          <a className='system-xs-medium flex cursor-pointer items-center text-text-accent-light-mode-only' href={billingUrl} target='_blank' rel='noopener noreferrer'>
-            <span className='pr-0.5'>{t('billing.viewBilling')}</span>
-            <RiArrowRightUpLine className='h-4 w-4' />
-          </a>
-        </>
+        <a className='mt-5 flex px-6 justify-between h-12 items-center bg-gray-50 rounded-xl cursor-pointer' href={billingUrl} target='_blank' rel='noopener noreferrer'>
+          <div className='flex items-center'>
+            <ReceiptList className='w-4 h-4 text-gray-700' />
+            <div className='ml-2 text-sm font-normal text-gray-700'>{t('billing.viewBilling')}</div>
+          </div>
+          <RiExternalLinkLine className='w-3 h-3' />
+        </a>
       )}
     </div>
   )

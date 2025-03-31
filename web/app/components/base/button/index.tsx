@@ -34,11 +34,10 @@ export type ButtonProps = {
   destructive?: boolean
   loading?: boolean
   styleCss?: CSSProperties
-  spinnerClassName?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, destructive, loading, styleCss, children, spinnerClassName, ...props }, ref) => {
+  ({ className, variant, size, destructive, loading, styleCss, children, ...props }, ref) => {
     return (
       <button
         type='button'
@@ -51,7 +50,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {children}
-        {loading && <Spinner loading={loading} className={classNames('!text-white !h-3 !w-3 !border-2 !ml-1', spinnerClassName)} />}
+        {loading && <Spinner loading={loading} className='!text-white !h-3 !w-3 !border-2 !ml-1' />}
       </button>
     )
   },

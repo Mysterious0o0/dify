@@ -49,7 +49,6 @@ class FileAttribute(StrEnum):
     TRANSFER_METHOD = "transfer_method"
     URL = "url"
     EXTENSION = "extension"
-    RELATED_ID = "related_id"
 
 
 class ArrayFileAttribute(StrEnum):

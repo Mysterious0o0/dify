@@ -27,12 +27,13 @@ export type EmbeddedChatbotContextValue = {
   appPrevChatList: ChatItem[]
   pinnedConversationList: AppConversationData['data']
   conversationList: AppConversationData['data']
+  showConfigPanelBeforeChat: boolean
   newConversationInputs: Record<string, any>
   newConversationInputsRef: RefObject<Record<string, any>>
   handleNewConversationInputsChange: (v: Record<string, any>) => void
   inputsForms: any[]
   handleNewConversation: () => void
-  handleStartChat: (callback?: any) => void
+  handleStartChat: () => void
   handleChangeConversation: (conversationId: string) => void
   handleNewConversationCompleted: (newConversationId: string) => void
   chatShouldReloadKey: string
@@ -42,12 +43,6 @@ export type EmbeddedChatbotContextValue = {
   handleFeedback: (messageId: string, feedback: Feedback) => void
   currentChatInstanceRef: RefObject<{ handleStop: () => void }>
   themeBuilder?: ThemeBuilder
-  clearChatList?: boolean
-  setClearChatList: (state: boolean) => void
-  isResponding?: boolean
-  setIsResponding: (state: boolean) => void,
-  currentConversationInputs: Record<string, any> | null,
-  setCurrentConversationInputs: (v: Record<string, any>) => void,
 }
 
 export const EmbeddedChatbotContext = createContext<EmbeddedChatbotContextValue>({
@@ -55,6 +50,7 @@ export const EmbeddedChatbotContext = createContext<EmbeddedChatbotContextValue>
   appPrevChatList: [],
   pinnedConversationList: [],
   conversationList: [],
+  showConfigPanelBeforeChat: false,
   newConversationInputs: {},
   newConversationInputsRef: { current: {} },
   handleNewConversationInputsChange: () => {},
@@ -68,11 +64,5 @@ export const EmbeddedChatbotContext = createContext<EmbeddedChatbotContextValue>
   isInstalledApp: false,
   handleFeedback: () => {},
   currentChatInstanceRef: { current: { handleStop: () => {} } },
-  clearChatList: false,
-  setClearChatList: () => {},
-  isResponding: false,
-  setIsResponding: () => {},
-  currentConversationInputs: {},
-  setCurrentConversationInputs: () => {},
 })
 export const useEmbeddedChatbotContext = () => useContext(EmbeddedChatbotContext)

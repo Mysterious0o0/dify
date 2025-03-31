@@ -1,6 +1,6 @@
 'use client'
 import type { FC } from 'react'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import produce from 'immer'
 import {
@@ -24,7 +24,6 @@ import { Variable02 } from '@/app/components/base/icons/src/vender/solid/develop
 import { BubbleX } from '@/app/components/base/icons/src/vender/line/others'
 import { FILE_EXTS } from '@/app/components/base/prompt-editor/constants'
 import cn from '@/utils/classnames'
-import type { FileEntity } from '@/app/components/base/file-uploader/types'
 
 type Props = {
   payload: InputVar
@@ -67,22 +66,22 @@ const FormItem: FC<Props> = ({
     if (typeof payload.label === 'object') {
       const { nodeType, nodeName, variable, isChatVar } = payload.label
       return (
-        <div className='flex h-full items-center'>
+        <div className='h-full flex items-center'>
           {!isChatVar && (
             <div className='flex items-center'>
               <div className='p-[1px]'>
                 <VarBlockIcon type={nodeType || BlockEnum.Start} />
               </div>
-              <div className='mx-0.5 max-w-[150px] truncate text-xs font-medium text-gray-700' title={nodeName}>
+              <div className='mx-0.5 text-xs font-medium text-gray-700 max-w-[150px] truncate' title={nodeName}>
                 {nodeName}
               </div>
               <Line3 className='mr-0.5'></Line3>
             </div>
           )}
           <div className='flex items-center text-primary-600'>
-            {!isChatVar && <Variable02 className='h-3.5 w-3.5' />}
-            {isChatVar && <BubbleX className='h-3.5 w-3.5 text-util-colors-teal-teal-700' />}
-            <div className={cn('ml-0.5 max-w-[150px] truncate text-xs font-medium', isChatVar && 'text-text-secondary')} title={variable} >
+            {!isChatVar && <Variable02 className='w-3.5 h-3.5' />}
+            {isChatVar && <BubbleX className='w-3.5 h-3.5 text-util-colors-teal-teal-700' />}
+            <div className={cn('ml-0.5 text-xs font-medium max-w-[150px] truncate', isChatVar && 'text-text-secondary')} title={variable} >
               {variable}
             </div>
           </div>
@@ -95,27 +94,12 @@ const FormItem: FC<Props> = ({
   const isArrayLikeType = [InputVarType.contexts, InputVarType.iterator].includes(type)
   const isContext = type === InputVarType.contexts
   const isIterator = type === InputVarType.iterator
-  const singleFileValue = useMemo(() => {
-    if (payload.variable === '#files#')
-      return value?.[0] || []
-
-    return value ? [value] : []
-  }, [payload.variable, value])
-  const handleSingleFileChange = useCallback((files: FileEntity[]) => {
-    if (payload.variable === '#files#')
-      onChange(files)
-    else if (files.length)
-      onChange(files[0])
-    else
-      onChange(null)
-  }, [onChange, payload.variable])
-
   return (
     <div className={cn(className)}>
       {!isArrayLikeType && (
-        <div className='system-sm-semibold mb-1 flex h-6 items-center gap-1 text-text-secondary'>
+        <div className='h-6 mb-1 flex items-center gap-1 text-text-secondary system-sm-semibold'>
           <div className='truncate'>{typeof payload.label === 'object' ? nodeKey : payload.label}</div>
-          {!payload.required && <span className='system-xs-regular text-text-tertiary'>{t('workflow.panel.optional')}</span>}
+          {!payload.required && <span className='text-text-tertiary system-xs-regular'>{t('workflow.panel.optional')}</span>}
         </div>
       )}
       <div className='grow'>
@@ -177,8 +161,13 @@ const FormItem: FC<Props> = ({
         }
         {(type === InputVarType.singleFile) && (
           <FileUploaderInAttachmentWrapper
-            value={singleFileValue}
-            onChange={handleSingleFileChange}
+            value={value ? [value] : []}
+            onChange={(files) => {
+              if (files.length)
+                onChange(files[0])
+              else
+                onChange(null)
+            }}
             fileConfig={{
               allowed_file_types: inStepRun
                 ? [
@@ -259,7 +248,7 @@ const FormItem: FC<Props> = ({
                     (value as any).length > 1
                       ? (<RiDeleteBinLine
                         onClick={handleArrayItemRemove(index)}
-                        className='mr-1 h-3.5 w-3.5 cursor-pointer text-text-tertiary'
+                        className='mr-1 w-3.5 h-3.5 text-text-tertiary cursor-pointer'
                       />)
                       : undefined
                   }
@@ -285,7 +274,7 @@ const FormItem: FC<Props> = ({
                     (value as any).length > 1
                       ? (<RiDeleteBinLine
                         onClick={handleArrayItemRemove(index)}
-                        className='mr-1 h-3.5 w-3.5 cursor-pointer text-text-tertiary'
+                        className='mr-1 w-3.5 h-3.5 text-text-tertiary cursor-pointer'
                       />)
                       : undefined
                   }

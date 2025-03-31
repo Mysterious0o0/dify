@@ -33,9 +33,3 @@ class OceanBaseVectorConfig(BaseSettings):
         description="Name of the OceanBase Vector database to connect to",
         default=None,
     )
-
-    OCEANBASE_ENABLE_HYBRID_SEARCH: bool = Field(
-        description="Enable hybrid search features (requires OceanBase >= 4.3.5.1). Set to false for compatibility "
-        "with older versions",
-        default=False,
-    )

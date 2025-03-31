@@ -310,8 +310,7 @@ export const useFile = (fileConfig: FileUpload) => {
 
   const handleClipboardPasteFile = useCallback((e: ClipboardEvent<HTMLTextAreaElement>) => {
     const file = e.clipboardData?.files[0]
-    const text = e.clipboardData?.getData('text/plain')
-    if (file && !text) {
+    if (file) {
       e.preventDefault()
       handleLocalFileUpload(file)
     }

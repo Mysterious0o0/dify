@@ -28,10 +28,10 @@ const LanguageSelect: FC<ILanguageSelectProps> = ({
           {languages.filter(language => language.supported).map(({ prompt_name }) => (
             <div
               key={prompt_name}
-              className='inline-flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 hover:bg-state-base-hover'
+              className='w-full py-2 px-3 inline-flex items-center justify-between hover:bg-state-base-hover rounded-lg cursor-pointer'
               onClick={() => onSelect(prompt_name)}
             >
-              <span className='system-sm-medium text-text-secondary'>{prompt_name}</span>
+              <span className='text-text-secondary system-sm-medium'>{prompt_name}</span>
               {(currentLanguage === prompt_name) && <RiCheckLine className='size-4 text-text-accent' />}
             </div>
           ))}
@@ -40,7 +40,7 @@ const LanguageSelect: FC<ILanguageSelectProps> = ({
       btnElement={
         <div className={cn('inline-flex items-center gap-x-[1px]', disabled && 'cursor-not-allowed')}>
           <span className={cn(
-            'system-xs-semibold px-[3px] text-components-button-tertiary-text',
+            'px-[3px] system-xs-semibold text-components-button-tertiary-text',
             disabled ? 'text-components-button-tertiary-text-disabled' : '',
           )}>
             {currentLanguage}
@@ -52,10 +52,10 @@ const LanguageSelect: FC<ILanguageSelectProps> = ({
         </div>
       }
       btnClassName={() => cn(
-        '!hover:bg-components-button-tertiary-bg !mx-1 rounded-md !border-0 !bg-components-button-tertiary-bg !px-1.5 !py-1',
+        '!border-0 rounded-md !px-1.5 !py-1 !mx-1 !bg-components-button-tertiary-bg !hover:bg-components-button-tertiary-bg',
         disabled ? 'bg-components-button-tertiary-bg-disabled' : '',
       )}
-      className='!left-1 !z-20 h-fit !w-[140px] !translate-x-0'
+      className='!w-[140px] h-fit !z-20 !translate-x-0 !left-1'
     />
   )
 }

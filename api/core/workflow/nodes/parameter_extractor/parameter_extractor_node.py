@@ -7,7 +7,6 @@ from core.app.entities.app_invoke_entities import ModelConfigWithCredentialsEnti
 from core.file import File
 from core.memory.token_buffer_memory import TokenBufferMemory
 from core.model_manager import ModelInstance
-from core.model_runtime.entities import ImagePromptMessageContent
 from core.model_runtime.entities.llm_entities import LLMResult, LLMUsage
 from core.model_runtime.entities.message_entities import (
     AssistantPromptMessage,
@@ -130,7 +129,6 @@ class ParameterExtractorNode(LLMNode):
                 model_config=model_config,
                 memory=memory,
                 files=files,
-                vision_detail=node_data.vision.configs.detail,
             )
         else:
             # use prompt engineering
@@ -141,7 +139,6 @@ class ParameterExtractorNode(LLMNode):
                 model_config=model_config,
                 memory=memory,
                 files=files,
-                vision_detail=node_data.vision.configs.detail,
             )
 
             prompt_message_tools = []
@@ -247,8 +244,8 @@ class ParameterExtractorNode(LLMNode):
         if not isinstance(invoke_result, LLMResult):
             raise InvalidInvokeResultError(f"Invalid invoke result: {invoke_result}")
 
-        text = invoke_result.message.content or ""
-        if not isinstance(text, str):
+        text = invoke_result.message.content
+        if not isinstance(text, str | None):
             raise InvalidTextContentTypeError(f"Invalid text content type: {type(text)}. Expected str.")
 
         usage = invoke_result.usage
@@ -270,7 +267,6 @@ class ParameterExtractorNode(LLMNode):
         model_config: ModelConfigWithCredentialsEntity,
         memory: Optional[TokenBufferMemory],
         files: Sequence[File],
-        vision_detail: Optional[ImagePromptMessageContent.DETAIL] = None,
     ) -> tuple[list[PromptMessage], list[PromptMessageTool]]:
         """
         Generate function call prompt.
@@ -293,7 +289,6 @@ class ParameterExtractorNode(LLMNode):
             memory_config=node_data.memory,
             memory=None,
             model_config=model_config,
-            image_detail_config=vision_detail,
         )
 
         # find last user message
@@ -352,7 +347,6 @@ class ParameterExtractorNode(LLMNode):
         model_config: ModelConfigWithCredentialsEntity,
         memory: Optional[TokenBufferMemory],
         files: Sequence[File],
-        vision_detail: Optional[ImagePromptMessageContent.DETAIL] = None,
     ) -> list[PromptMessage]:
         """
         Generate prompt engineering prompt.
@@ -367,7 +361,6 @@ class ParameterExtractorNode(LLMNode):
                 model_config=model_config,
                 memory=memory,
                 files=files,
-                vision_detail=vision_detail,
             )
         elif model_mode == ModelMode.CHAT:
             return self._generate_prompt_engineering_chat_prompt(
@@ -377,7 +370,6 @@ class ParameterExtractorNode(LLMNode):
                 model_config=model_config,
                 memory=memory,
                 files=files,
-                vision_detail=vision_detail,
             )
         else:
             raise InvalidModelModeError(f"Invalid model mode: {model_mode}")
@@ -390,7 +382,6 @@ class ParameterExtractorNode(LLMNode):
         model_config: ModelConfigWithCredentialsEntity,
         memory: Optional[TokenBufferMemory],
         files: Sequence[File],
-        vision_detail: Optional[ImagePromptMessageContent.DETAIL] = None,
     ) -> list[PromptMessage]:
         """
         Generate completion prompt.
@@ -411,7 +402,6 @@ class ParameterExtractorNode(LLMNode):
             memory_config=node_data.memory,
             memory=memory,
             model_config=model_config,
-            image_detail_config=vision_detail,
         )
 
         return prompt_messages
@@ -424,7 +414,6 @@ class ParameterExtractorNode(LLMNode):
         model_config: ModelConfigWithCredentialsEntity,
         memory: Optional[TokenBufferMemory],
         files: Sequence[File],
-        vision_detail: Optional[ImagePromptMessageContent.DETAIL] = None,
     ) -> list[PromptMessage]:
         """
         Generate chat prompt.
@@ -452,7 +441,6 @@ class ParameterExtractorNode(LLMNode):
             memory_config=node_data.memory,
             memory=None,
             model_config=model_config,
-            image_detail_config=vision_detail,
         )
 
         # find last user message

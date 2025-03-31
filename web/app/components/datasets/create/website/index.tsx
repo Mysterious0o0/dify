@@ -73,29 +73,27 @@ const Website: FC<Props> = ({
   return (
     <div>
       <div className="mb-4">
-        <div className="system-md-medium mb-2 text-text-secondary">
+        <div className="font-medium text-gray-700 mb-2 h-6">
           {t('datasetCreation.stepOne.website.chooseProvider')}
         </div>
         <div className="flex space-x-2">
           <button
-            className={cn('flex items-center justify-center rounded-lg px-4 py-2',
+            className={`px-4 py-2 text-sm font-medium rounded-md flex items-center justify-center ${
               selectedProvider === DataSourceProvider.jinaReader
-                ? 'system-sm-medium border-[1.5px] border-components-option-card-option-selected-border bg-components-option-card-option-selected-bg text-text-primary'
-                : `system-sm-regular border border-components-option-card-option-border bg-components-option-card-option-bg text-text-secondary
-                hover:border-components-option-card-option-border-hover hover:bg-components-option-card-option-bg-hover hover:shadow-xs hover:shadow-shadow-shadow-3`,
-            )}
+                ? 'bg-primary-50 text-primary-600'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
             onClick={() => setSelectedProvider(DataSourceProvider.jinaReader)}
           >
             <span className={cn(s.jinaLogo, 'mr-2')} />
             <span>Jina Reader</span>
           </button>
           <button
-            className={cn('rounded-lg px-4 py-2',
+            className={`px-4 py-2 text-sm font-medium rounded-md ${
               selectedProvider === DataSourceProvider.fireCrawl
-                ? 'system-sm-medium border-[1.5px] border-components-option-card-option-selected-border bg-components-option-card-option-selected-bg text-text-primary'
-                : `system-sm-regular border border-components-option-card-option-border bg-components-option-card-option-bg text-text-secondary
-                hover:border-components-option-card-option-border-hover hover:bg-components-option-card-option-bg-hover hover:shadow-xs hover:shadow-shadow-shadow-3`,
-            )}
+                ? 'bg-primary-50 text-primary-600'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
             onClick={() => setSelectedProvider(DataSourceProvider.fireCrawl)}
           >
             🔥 Firecrawl

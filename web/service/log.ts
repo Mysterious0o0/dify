@@ -17,6 +17,7 @@ import type {
   LogMessageAnnotationsResponse,
   LogMessageFeedbacksRequest,
   LogMessageFeedbacksResponse,
+  WorkflowLogsRequest,
   WorkflowLogsResponse,
   WorkflowRunDetailResponse,
 } from '@/models/log'
@@ -63,7 +64,7 @@ export const fetchAnnotationsCount: Fetcher<AnnotationsCountResponse, { url: str
   return get<AnnotationsCountResponse>(url)
 }
 
-export const fetchWorkflowLogs: Fetcher<WorkflowLogsResponse, { url: string; params: Record<string, any> }> = ({ url, params }) => {
+export const fetchWorkflowLogs: Fetcher<WorkflowLogsResponse, { url: string; params?: WorkflowLogsRequest }> = ({ url, params }) => {
   return get<WorkflowLogsResponse>(url, { params })
 }
 

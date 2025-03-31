@@ -70,9 +70,6 @@ export type ChatProps = {
   showFileUpload?: boolean
   onFeatureBarClick?: (state: boolean) => void
   noSpacing?: boolean
-  inputDisabled?: boolean
-  isMobile?: boolean
-  sidebarCollapseState?: boolean
 }
 
 const Chat: FC<ChatProps> = ({
@@ -109,9 +106,6 @@ const Chat: FC<ChatProps> = ({
   showFileUpload,
   onFeatureBarClick,
   noSpacing,
-  inputDisabled,
-  isMobile,
-  sidebarCollapseState,
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -166,28 +160,19 @@ const Chat: FC<ChatProps> = ({
 
   useEffect(() => {
     if (chatFooterRef.current && chatContainerRef.current) {
-      // container padding bottom
-      const resizeContainerObserver = new ResizeObserver((entries) => {
+      const resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const { blockSize } = entry.borderBoxSize[0]
+
           chatContainerRef.current!.style.paddingBottom = `${blockSize}px`
           handleScrollToBottom()
         }
       })
-      resizeContainerObserver.observe(chatFooterRef.current)
 
-      // footer width
-      const resizeFooterObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const { inlineSize } = entry.borderBoxSize[0]
-          chatFooterRef.current!.style.width = `${inlineSize}px`
-        }
-      })
-      resizeFooterObserver.observe(chatContainerRef.current)
+      resizeObserver.observe(chatFooterRef.current)
 
       return () => {
-        resizeContainerObserver.disconnect()
-        resizeFooterObserver.disconnect()
+        resizeObserver.disconnect()
       }
     }
   }, [handleScrollToBottom])
@@ -197,17 +182,12 @@ const Chat: FC<ChatProps> = ({
     if (chatContainer) {
       const setUserScrolled = () => {
         if (chatContainer)
-          userScrolledRef.current = chatContainer.scrollHeight - chatContainer.scrollTop > chatContainer.clientHeight
+          userScrolledRef.current = chatContainer.scrollHeight - chatContainer.scrollTop >= chatContainer.clientHeight + 300
       }
       chatContainer.addEventListener('scroll', setUserScrolled)
       return () => chatContainer.removeEventListener('scroll', setUserScrolled)
     }
   }, [])
-
-  useEffect(() => {
-    if (!sidebarCollapseState)
-      setTimeout(() => handleWindowResize(), 200)
-  }, [sidebarCollapseState])
 
   const hasTryToAsk = config?.suggested_questions_after_answer?.enabled && !!suggestedQuestions?.length && onSend
 
@@ -271,8 +251,11 @@ const Chat: FC<ChatProps> = ({
           </div>
         </div>
         <div
-          className={`absolute bottom-0 flex justify-center bg-chat-input-mask ${(hasTryToAsk || !noChatInput || !noStopResponding) && chatFooterClassName}`}
+          className={`absolute bottom-0 ${(hasTryToAsk || !noChatInput || !noStopResponding) && chatFooterClassName}`}
           ref={chatFooterRef}
+          style={{
+            background: 'linear-gradient(0deg, #F9FAFB 40%, rgba(255, 255, 255, 0.00) 100%)',
+          }}
         >
           <div
             ref={chatFooterInnerRef}
@@ -280,10 +263,10 @@ const Chat: FC<ChatProps> = ({
           >
             {
               !noStopResponding && isResponding && (
-                <div className='mb-2 flex justify-center'>
+                <div className='flex justify-center mb-2'>
                   <Button onClick={onStopResponding}>
-                    <StopCircle className='mr-[5px] h-3.5 w-3.5 text-gray-500' />
-                    <span className='text-xs font-normal text-gray-500'>{t('appDebug.operation.stopResponding')}</span>
+                    <StopCircle className='mr-[5px] w-3.5 h-3.5 text-gray-500' />
+                    <span className='text-xs text-gray-500 font-normal'>{t('appDebug.operation.stopResponding')}</span>
                   </Button>
                 </div>
               )
@@ -293,14 +276,12 @@ const Chat: FC<ChatProps> = ({
                 <TryToAsk
                   suggestedQuestions={suggestedQuestions}
                   onSend={onSend}
-                  isMobile={isMobile}
                 />
               )
             }
             {
               !noChatInput && (
                 <ChatInputArea
-                  disabled={inputDisabled}
                   showFeatureBar={showFeatureBar}
                   showFileUpload={showFileUpload}
                   featureBarDisabled={isResponding}

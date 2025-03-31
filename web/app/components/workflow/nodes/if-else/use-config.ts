@@ -57,7 +57,6 @@ const useConfig = (id: string, payload: IfElseNodeType) => {
   } = useIsVarFileAttribute({
     nodeId: id,
     isInIteration: payload.isInIteration,
-    isInLoop: payload.isInLoop,
   })
 
   const varsIsVarFileAttribute = useMemo(() => {

@@ -45,11 +45,6 @@ export const BLOCKS: Block[] = [
     title: 'Iteration',
   },
   {
-    classification: BlockClassificationEnum.Logic,
-    type: BlockEnum.Loop,
-    title: 'Loop',
-  },
-  {
     classification: BlockClassificationEnum.Transform,
     type: BlockEnum.Code,
     title: 'Code',
@@ -88,11 +83,6 @@ export const BLOCKS: Block[] = [
     classification: BlockClassificationEnum.Utilities,
     type: BlockEnum.ListFilter,
     title: 'List Filter',
-  },
-  {
-    classification: BlockClassificationEnum.Default,
-    type: BlockEnum.Agent,
-    title: 'Agent',
   },
 ]
 

@@ -5,7 +5,6 @@ import {
 } from '@remixicon/react'
 import Item from './item'
 import Empty from './empty'
-import Button from '@/app/components/base/button'
 import { useModalContext } from '@/context/modal-context'
 import { fetchApiBasedExtensionList } from '@/service/common'
 
@@ -42,14 +41,13 @@ const ApiBasedExtensionPage = () => {
           ))
         )
       }
-      <Button
-        variant='secondary'
-        className='w-full'
+      <div
+        className='flex items-center justify-center px-3 h-8 text-[13px] font-medium text-gray-700 rounded-lg bg-gray-50 cursor-pointer'
         onClick={handleOpenApiBasedExtensionModal}
       >
-        <RiAddLine className='mr-1 h-4 w-4' />
+        <RiAddLine className='mr-2 w-4 h-4' />
         {t('common.apiBasedExtension.add')}
-      </Button>
+      </div>
     </div>
   )
 }

@@ -2,9 +2,7 @@
 import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  RiApps2Line,
-} from '@remixicon/react'
+import { ChatBot } from '../../base/icons/src/vender/line/communication'
 import UsageInfo from '../usage-info'
 import { useProviderContext } from '@/context/provider-context'
 
@@ -24,8 +22,8 @@ const AppsInfo: FC<Props> = ({
   return (
     <UsageInfo
       className={className}
-      Icon={RiApps2Line}
-      name={t('billing.usagePage.buildApps')}
+      Icon={ChatBot}
+      name={t('billing.plansCommon.buildApps')}
       usage={usage.buildApps}
       total={total.buildApps}
     />

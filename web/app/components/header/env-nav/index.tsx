@@ -20,13 +20,13 @@ const EnvNav = () => {
 
   return (
     <div className={`
-      mr-4 flex h-[22px] items-center rounded-md border px-2 text-xs font-medium
+      flex items-center h-[22px] mr-4 rounded-md px-2 text-xs font-medium border
       ${headerEnvClassName[langeniusVersionInfo.current_env]}
     `}>
       {
         langeniusVersionInfo.current_env === 'TESTING' && (
           <>
-            <Beaker02 className='mr-1 h-3 w-3' />
+            <Beaker02 className='w-3 h-3 mr-1' />
             {t('common.environment.testing')}
           </>
         )
@@ -34,7 +34,7 @@ const EnvNav = () => {
       {
         langeniusVersionInfo.current_env === 'DEVELOPMENT' && (
           <>
-            <TerminalSquare className='mr-1 h-3 w-3' />
+            <TerminalSquare className='w-3 h-3 mr-1' />
             {t('common.environment.development')}
           </>
         )

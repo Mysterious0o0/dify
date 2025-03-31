@@ -1,8 +1,7 @@
 import type { FC } from 'react'
-import { RiEqualizer2Line } from '@remixicon/react'
+import { RiArrowDownSLine } from '@remixicon/react'
 import { CubeOutline } from '@/app/components/base/icons/src/vender/line/shapes'
-import cn from '@/utils/classnames'
-import { useTranslation } from 'react-i18next'
+
 type ModelTriggerProps = {
   open: boolean
   className?: string
@@ -11,27 +10,27 @@ const ModelTrigger: FC<ModelTriggerProps> = ({
   open,
   className,
 }) => {
-  const { t } = useTranslation()
   return (
     <div
-      className={cn(
-        'flex cursor-pointer items-center gap-0.5 rounded-lg bg-components-input-bg-normal p-1 hover:bg-components-input-bg-hover', open && 'bg-components-input-bg-hover',
-        className,
-      )}
+      className={`
+        flex items-center px-2 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer
+        ${className}
+        ${open && '!bg-gray-200'}
+      `}
     >
-      <div className='flex grow items-center'>
-        <div className='mr-1.5 flex h-4 w-4 items-center justify-center rounded-[5px] border border-dashed border-divider-regular'>
-          <CubeOutline className='h-3 w-3 text-text-quaternary' />
+      <div className='grow flex items-center'>
+        <div className='mr-1.5 flex items-center justify-center w-4 h-4 rounded-[5px] border border-dashed border-black/5'>
+          <CubeOutline className='w-3 h-3 text-gray-400' />
         </div>
         <div
-          className='truncate text-[13px] text-text-tertiary'
-          title='Configure model'
+          className='text-[13px] text-gray-500 truncate'
+          title='Select model'
         >
-          {t('plugin.detailPanel.configureModel')}
+          Select model
         </div>
       </div>
-      <div className='flex h-4 w-4 shrink-0 items-center justify-center'>
-        <RiEqualizer2Line className='h-3.5 w-3.5 text-text-tertiary' />
+      <div className='shrink-0 flex items-center justify-center w-4 h-4'>
+        <RiArrowDownSLine className='w-3.5 h-3.5 text-gray-500' />
       </div>
     </div>
   )

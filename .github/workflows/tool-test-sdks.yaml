@@ -26,19 +26,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: ''
-          cache-dependency-path: 'pnpm-lock.yaml'
+          cache-dependency-path: 'yarn.lock'
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: yarn install
 
       - name: Test
-        run: pnpm test
+        run: yarn test

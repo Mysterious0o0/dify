@@ -34,8 +34,6 @@ def get_attr(*, file: File, attr: FileAttribute):
             return file.remote_url
         case FileAttribute.EXTENSION:
             return file.extension
-        case FileAttribute.RELATED_ID:
-            return file.related_id
 
 
 def to_prompt_message_content(

@@ -33,7 +33,7 @@ const ToolCallItem: FC<Props> = ({ toolCall, isLLM = false, isFinal, tokens, obs
     if (time < 1)
       return `${(time * 1000).toFixed(3)} ms`
     if (time > 60)
-      return `${Number.parseInt(Math.round(time / 60).toString())} m ${(time % 60).toFixed(3)} s`
+      return `${parseInt(Math.round(time / 60).toString())} m ${(time % 60).toFixed(3)} s`
     return `${time.toFixed(3)} s`
   }
 
@@ -41,32 +41,32 @@ const ToolCallItem: FC<Props> = ({ toolCall, isLLM = false, isFinal, tokens, obs
     if (tokens < 1000)
       return tokens
     if (tokens >= 1000 && tokens < 1000000)
-      return `${Number.parseFloat((tokens / 1000).toFixed(3))}K`
+      return `${parseFloat((tokens / 1000).toFixed(3))}K`
     if (tokens >= 1000000)
-      return `${Number.parseFloat((tokens / 1000000).toFixed(3))}M`
+      return `${parseFloat((tokens / 1000000).toFixed(3))}M`
   }
 
   return (
     <div className={cn('py-1')}>
-      <div className={cn('group rounded-2xl border border-components-panel-border bg-background-default shadow-xs transition-all hover:shadow-md')}>
+      <div className={cn('group transition-all bg-white border border-gray-100 rounded-2xl shadow-xs hover:shadow-md')}>
         <div
           className={cn(
-            'flex cursor-pointer items-center py-3 pl-[6px] pr-3',
+            'flex items-center py-3 pl-[6px] pr-3 cursor-pointer',
             !collapseState && '!pb-2',
           )}
           onClick={() => setCollapseState(!collapseState)}
         >
           <ChevronRight
             className={cn(
-              'mr-1 h-3 w-3 shrink-0 text-text-quaternary transition-all group-hover:text-text-tertiary',
+              'shrink-0 w-3 h-3 mr-1 text-gray-400 transition-all group-hover:text-gray-500',
               !collapseState && 'rotate-90',
             )}
           />
-          <BlockIcon className={cn('mr-2 shrink-0')} type={isLLM ? BlockEnum.LLM : BlockEnum.Tool} toolIcon={toolCall.tool_icon} />
+          <BlockIcon className={cn('shrink-0 mr-2')} type={isLLM ? BlockEnum.LLM : BlockEnum.Tool} toolIcon={toolCall.tool_icon} />
           <div className={cn(
-            'grow truncate text-[13px] font-semibold leading-[16px] text-text-secondary',
+            'grow text-gray-700 text-[13px] leading-[16px] font-semibold truncate',
           )} title={toolName}>{toolName}</div>
-          <div className='shrink-0 text-xs leading-[18px] text-text-tertiary'>
+          <div className='shrink-0 text-gray-500 text-xs leading-[18px]'>
             {toolCall.time_cost && (
               <span>{getTime(toolCall.time_cost || 0)}</span>
             )}
@@ -75,17 +75,17 @@ const ToolCallItem: FC<Props> = ({ toolCall, isLLM = false, isFinal, tokens, obs
             )}
           </div>
           {toolCall.status === 'success' && (
-            <RiCheckboxCircleLine className='ml-2 h-3.5 w-3.5 shrink-0 text-[#12B76A]' />
+            <RiCheckboxCircleLine className='shrink-0 ml-2 w-3.5 h-3.5 text-[#12B76A]' />
           )}
           {toolCall.status === 'error' && (
-            <RiErrorWarningLine className='ml-2 h-3.5 w-3.5 shrink-0 text-[#F04438]' />
+            <RiErrorWarningLine className='shrink-0 ml-2 w-3.5 h-3.5 text-[#F04438]' />
           )}
         </div>
         {!collapseState && (
           <div className='pb-2'>
             <div className={cn('px-[10px] py-1')}>
               {toolCall.status === 'error' && (
-                <div className='rounded-lg border-[0.5px] border-[rbga(0,0,0,0.05)] bg-[#fef3f2] px-3 py-[10px] text-xs leading-[18px] text-[#d92d20] shadow-xs'>{toolCall.error}</div>
+                <div className='px-3 py-[10px] bg-[#fef3f2] rounded-lg border-[0.5px] border-[rbga(0,0,0,0.05)] text-xs leading-[18px] text-[#d92d20] shadow-xs'>{toolCall.error}</div>
               )}
             </div>
             {toolCall.tool_input && (

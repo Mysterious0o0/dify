@@ -2,8 +2,6 @@ import type { DataSourceNotionPage, DataSourceProvider } from './common'
 import type { AppIconType, AppMode, RetrievalConfig } from '@/types/app'
 import type { Tag } from '@/app/components/base/tag-management/constant'
 import type { IndexingType } from '@/app/components/datasets/create/step-two'
-import type { MetadataFilteringVariableType } from '@/app/components/workflow/nodes/knowledge-retrieval/types'
-import type { MetadataItemWithValue } from '@/app/components/datasets/metadata/types'
 
 export enum DataSourceType {
   FILE = 'upload_file',
@@ -12,22 +10,15 @@ export enum DataSourceType {
 }
 
 export enum DatasetPermission {
-  onlyMe = 'only_me',
-  allTeamMembers = 'all_team_members',
-  partialMembers = 'partial_members',
+  'onlyMe' = 'only_me',
+  'allTeamMembers' = 'all_team_members',
+  'partialMembers' = 'partial_members',
 }
 
 export enum ChunkingMode {
-  text = 'text_model', // General text
-  qa = 'qa_model', // General QA
-  parentChild = 'hierarchical_model', // Parent-Child
-}
-
-export type MetadataInDoc = {
-  value: string
-  id: string
-  type: MetadataFilteringVariableType
-  name: string
+  'text' = 'text_model', // General text
+  'qa' = 'qa_model', // General QA
+  'parentChild' = 'hierarchical_model', // Parent-Child
 }
 
 export type DataSet = {
@@ -65,8 +56,6 @@ export type DataSet = {
     score_threshold: number
     score_threshold_enabled: boolean
   }
-  built_in_field_enabled: boolean
-  doc_metadata?: MetadataInDoc[]
 }
 
 export type ExternalAPIItem = {
@@ -151,10 +140,9 @@ export type FetchDatasetsParams = {
   url: string
   params: {
     page: number
-    ids?: string[]
     tag_ids?: string[]
-    limit?: number
-    include_all?: boolean
+    limit: number
+    include_all: boolean
     keyword?: string
   }
 }
@@ -325,7 +313,6 @@ export type SimpleDocumentDetail = InitialDocumentDetail & {
       extension: string
     }
   }
-  doc_metadata?: MetadataItemWithValue[]
 }
 
 export type DocumentListResponse = {
@@ -469,7 +456,6 @@ export type SegmentDetailModel = {
   position: number
   document_id: string
   content: string
-  sign_content: string
   word_count: number
   tokens: number
   keywords: string[]
@@ -538,7 +524,6 @@ export type Segment = {
   id: string
   document: Document
   content: string
-  sign_content: string
   position: number
   word_count: number
   tokens: number

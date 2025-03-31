@@ -9,8 +9,8 @@ type Props = {
   height: number
   minHeight: number
   onHeightChange: (height: number) => void
-  children: React.JSX.Element
-  footer?: React.JSX.Element
+  children: JSX.Element
+  footer?: JSX.Element
   hideResize?: boolean
 }
 
@@ -85,9 +85,9 @@ const PromptEditorHeightResizeWrap: FC<Props> = ({
       {footer}
       {!hideResize && (
         <div
-          className='absolute bottom-0 left-0 flex h-2 w-full cursor-row-resize justify-center'
+          className='absolute bottom-0 left-0 w-full flex justify-center h-2 cursor-row-resize'
           onMouseDown={handleStartResize}>
-          <div className='h-[3px] w-5 rounded-sm bg-gray-300'></div>
+          <div className='w-5 h-[3px] rounded-sm bg-gray-300'></div>
         </div>
       )}
     </div>

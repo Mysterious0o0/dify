@@ -67,10 +67,6 @@ type Shape = {
   setDraftUpdatedAt: (draftUpdatedAt: number) => void
   publishedAt: number
   setPublishedAt: (publishedAt: number) => void
-  currentVersion: VersionHistory | null
-  setCurrentVersion: (currentVersion: VersionHistory) => void
-  showWorkflowVersionHistoryPanel: boolean
-  setShowWorkflowVersionHistoryPanel: (showWorkflowVersionHistoryPanel: boolean) => void
   showInputsPanel: boolean
   setShowInputsPanel: (showInputsPanel: boolean) => void
   inputs: Record<string, string>
@@ -173,8 +169,6 @@ type Shape = {
   setShowTips: (showTips: string) => void
   iterTimes: number
   setIterTimes: (iterTimes: number) => void
-  loopTimes: number
-  setLoopTimes: (loopTimes: number) => void
   iterParallelLogMap: Map<string, Map<string, NodeTracing[]>>
   setIterParallelLogMap: (iterParallelLogMap: Map<string, Map<string, NodeTracing[]>>) => void
   versionHistory: VersionHistory[]
@@ -190,7 +184,7 @@ export const createWorkflowStore = () => {
   }
   return createStore<Shape>(set => ({
     appId: '',
-    panelWidth: localStorage.getItem('workflow-node-panel-width') ? Number.parseFloat(localStorage.getItem('workflow-node-panel-width')!) : 420,
+    panelWidth: localStorage.getItem('workflow-node-panel-width') ? parseFloat(localStorage.getItem('workflow-node-panel-width')!) : 420,
     showSingleRunPanel: false,
     setShowSingleRunPanel: showSingleRunPanel => set(() => ({ showSingleRunPanel })),
     workflowRunningData: undefined,
@@ -209,10 +203,6 @@ export const createWorkflowStore = () => {
     setDraftUpdatedAt: draftUpdatedAt => set(() => ({ draftUpdatedAt: draftUpdatedAt ? draftUpdatedAt * 1000 : 0 })),
     publishedAt: 0,
     setPublishedAt: publishedAt => set(() => ({ publishedAt: publishedAt ? publishedAt * 1000 : 0 })),
-    currentVersion: null,
-    setCurrentVersion: currentVersion => set(() => ({ currentVersion })),
-    showWorkflowVersionHistoryPanel: false,
-    setShowWorkflowVersionHistoryPanel: showWorkflowVersionHistoryPanel => set(() => ({ showWorkflowVersionHistoryPanel })),
     showInputsPanel: false,
     setShowInputsPanel: showInputsPanel => set(() => ({ showInputsPanel })),
     inputs: {},
@@ -300,8 +290,6 @@ export const createWorkflowStore = () => {
     setShowTips: showTips => set(() => ({ showTips })),
     iterTimes: 1,
     setIterTimes: iterTimes => set(() => ({ iterTimes })),
-    loopTimes: 1,
-    setLoopTimes: loopTimes => set(() => ({ loopTimes })),
     iterParallelLogMap: new Map<string, Map<string, NodeTracing[]>>(),
     setIterParallelLogMap: iterParallelLogMap => set(() => ({ iterParallelLogMap })),
 

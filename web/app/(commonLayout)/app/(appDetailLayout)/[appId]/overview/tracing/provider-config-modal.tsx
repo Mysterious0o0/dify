@@ -17,7 +17,6 @@ import { LinkExternal02 } from '@/app/components/base/icons/src/vender/line/gene
 import Confirm from '@/app/components/base/confirm'
 import { addTracingConfig, removeTracingConfig, updateTracingConfig } from '@/service/apps'
 import Toast from '@/app/components/base/toast'
-import Divider from '@/app/components/base/divider'
 
 type Props = {
   appId: string
@@ -123,8 +122,7 @@ const ProviderConfigModal: FC<Props> = ({
     }
 
     if (type === TracingProvider.opik) {
-      // todo: check field validity
-      // const postData = config as OpikConfig
+      const postData = config as OpikConfig
     }
 
     return errorMessage
@@ -167,12 +165,12 @@ const ProviderConfigModal: FC<Props> = ({
       {!isShowRemoveConfirm
         ? (
           <PortalToFollowElem open>
-            <PortalToFollowElemContent className='z-[60] h-full w-full'>
-              <div className='fixed inset-0 flex items-center justify-center bg-background-overlay'>
-                <div className='mx-2 max-h-[calc(100vh-120px)] w-[640px] overflow-y-auto rounded-2xl bg-components-panel-bg shadow-xl'>
+            <PortalToFollowElemContent className='w-full h-full z-[60]'>
+              <div className='fixed inset-0 flex items-center justify-center bg-black/[.25]'>
+                <div className='mx-2 w-[640px] max-h-[calc(100vh-120px)] bg-white shadow-xl rounded-2xl overflow-y-auto'>
                   <div className='px-8 pt-8'>
-                    <div className='mb-4 flex items-center justify-between'>
-                      <div className='title-2xl-semi-bold text-text-primary'>{t(`${I18N_PREFIX}.title`)}{t(`app.tracing.${type}.title`)}</div>
+                    <div className='flex justify-between items-center mb-4'>
+                      <div className='text-xl font-semibold text-gray-900'>{t(`${I18N_PREFIX}.title`)}{t(`app.tracing.${type}.title`)}</div>
                     </div>
 
                     <div className='space-y-4'>
@@ -265,29 +263,29 @@ const ProviderConfigModal: FC<Props> = ({
                       )}
 
                     </div>
-                    <div className='my-8 flex h-8 items-center justify-between'>
+                    <div className='my-8 flex justify-between items-center h-8'>
                       <a
-                        className='flex items-center space-x-1 text-xs font-normal leading-[18px] text-[#155EEF]'
+                        className='flex items-center space-x-1 leading-[18px] text-xs font-normal text-[#155EEF]'
                         target='_blank'
                         href={docURL[type]}
                       >
                         <span>{t(`${I18N_PREFIX}.viewDocsLink`, { key: t(`app.tracing.${type}.title`) })}</span>
-                        <LinkExternal02 className='h-3 w-3' />
+                        <LinkExternal02 className='w-3 h-3' />
                       </a>
                       <div className='flex items-center'>
                         {isEdit && (
                           <>
                             <Button
-                              className='h-9 text-sm font-medium text-text-secondary'
+                              className='h-9 text-sm font-medium text-gray-700'
                               onClick={showRemoveConfirm}
                             >
                               <span className='text-[#D92D20]'>{t('common.operation.remove')}</span>
                             </Button>
-                            <Divider className='mx-3 h-[18px]' />
+                            <div className='mx-3 w-px h-[18px] bg-gray-200'></div>
                           </>
                         )}
                         <Button
-                          className='mr-2 h-9 text-sm font-medium text-text-secondary'
+                          className='mr-2 h-9 text-sm font-medium text-gray-700'
                           onClick={onCancel}
                         >
                           {t('common.operation.cancel')}
@@ -304,12 +302,12 @@ const ProviderConfigModal: FC<Props> = ({
 
                     </div>
                   </div>
-                  <div className='border-t-[0.5px] border-divider-regular'>
-                    <div className='flex items-center justify-center bg-background-section-burn py-3 text-xs text-text-tertiary'>
-                      <Lock01 className='mr-1 h-3 w-3 text-text-tertiary' />
+                  <div className='border-t-[0.5px] border-t-black/5'>
+                    <div className='flex justify-center items-center py-3 bg-gray-50 text-xs text-gray-500'>
+                      <Lock01 className='mr-1 w-3 h-3 text-gray-500' />
                       {t('common.modelProvider.encrypted.front')}
                       <a
-                        className='mx-1 text-primary-600'
+                        className='text-primary-600 mx-1'
                         target='_blank' rel='noopener noreferrer'
                         href='https://pycryptodome.readthedocs.io/en/latest/src/cipher/oaep.html'
                       >

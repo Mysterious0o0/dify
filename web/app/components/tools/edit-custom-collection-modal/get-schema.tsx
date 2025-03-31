@@ -10,7 +10,6 @@ import {
 import Toast from '../../base/toast'
 import examples from './examples'
 import Button from '@/app/components/base/button'
-import Input from '@/app/components/base/input'
 import { importSchemaFromURL } from '@/service/tools'
 
 type Props = {
@@ -56,28 +55,28 @@ const GetSchema: FC<Props> = ({
   }, showExamplesRef)
 
   return (
-    <div className='relative flex w-[224px] justify-end space-x-1'>
+    <div className='flex space-x-1 justify-end relative w-[224px]'>
       <div ref={importURLRef}>
         <Button
           size='small'
           className='space-x-1 '
           onClick={() => { setShowImportFromUrl(!showImportFromUrl) }}
         >
-          <RiAddLine className='h-3 w-3' />
-          <div className='system-xs-medium text-text-secondary'>{t('tools.createTool.importFromUrl')}</div>
+          <RiAddLine className='w-3 h-3' />
+          <div className='text-xs font-medium text-gray-700'>{t('tools.createTool.importFromUrl')}</div>
         </Button>
         {showImportFromUrl && (
-          <div className=' absolute left-[-35px] top-[26px] rounded-lg border border-components-panel-border bg-components-panel-bg p-2 shadow-lg'>
+          <div className=' absolute left-[-35px] top-[26px] p-2 rounded-lg border border-gray-200 bg-white shadow-lg'>
             <div className='relative'>
-              <Input
+              <input
                 type='text'
-                className='w-[244px]'
+                className='w-[244px] h-8 pl-1.5 pr-[44px] overflow-x-auto border border-gray-200 rounded-lg text-[13px] focus:outline-none focus:border-components-input-border-active'
                 placeholder={t('tools.createTool.importFromUrlPlaceHolder')!}
                 value={importUrl}
                 onChange={e => setImportUrl(e.target.value)}
               />
               <Button
-                className='absolute right-1 top-1'
+                className='absolute top-1 right-1'
                 size='small'
                 variant='primary'
                 disabled={!importUrl}
@@ -96,11 +95,11 @@ const GetSchema: FC<Props> = ({
           className='space-x-1'
           onClick={() => { setShowExamples(!showExamples) }}
         >
-          <div className='system-xs-medium text-text-secondary'>{t('tools.createTool.examples')}</div>
-          <RiArrowDownSLine className='h-3 w-3' />
+          <div className='text-xs font-medium text-gray-700'>{t('tools.createTool.examples')}</div>
+          <RiArrowDownSLine className='w-3 h-3' />
         </Button>
         {showExamples && (
-          <div className='absolute right-0 top-7 rounded-lg bg-components-panel-bg p-1 shadow-sm'>
+          <div className='absolute top-7 right-0 p-1 rounded-lg bg-white shadow-sm'>
             {examples.map(item => (
               <div
                 key={item.key}
@@ -108,7 +107,7 @@ const GetSchema: FC<Props> = ({
                   onChange(item.content)
                   setShowExamples(false)
                 }}
-                className='system-sm-regular cursor-pointer whitespace-nowrap rounded-lg px-3 py-1.5 leading-5 text-text-secondary hover:bg-components-panel-on-panel-item-bg-hover'
+                className='px-3 py-1.5 rounded-lg hover:bg-gray-50 leading-5 text-sm font-normal text-gray-700 cursor-pointer whitespace-nowrap'
               >
                 {t(`tools.createTool.exampleOptions.${item.key}`)}
               </div>

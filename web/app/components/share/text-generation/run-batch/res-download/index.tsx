@@ -1,15 +1,13 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-import { RiDownloadLine } from '@remixicon/react'
 import {
   useCSVDownloader,
 } from 'react-papaparse'
 import { useTranslation } from 'react-i18next'
-import ActionButton from '@/app/components/base/action-button'
-import Button from '@/app/components/base/button'
 import cn from '@/utils/classnames'
-
+import { Download02 as DownloadIcon } from '@/app/components/base/icons/src/vender/solid/general'
+import Button from '@/app/components/base/button'
 export type IResDownloadProps = {
   isMobile: boolean
   values: Record<string, string>[]
@@ -33,17 +31,10 @@ const ResDownload: FC<IResDownloadProps> = ({
       }}
       data={values}
     >
-      {isMobile && (
-        <ActionButton>
-          <RiDownloadLine className='h-4 w-4' />
-        </ActionButton>
-      )}
-      {!isMobile && (
-        <Button className={cn('space-x-1')}>
-          <RiDownloadLine className='h-4 w-4' />
-          <span>{t('common.operation.download')}</span>
-        </Button>
-      )}
+      <Button className={cn('space-x-2 bg-white', isMobile ? '!p-0 !w-8 justify-center' : '')}>
+        <DownloadIcon className='w-4 h-4 text-[#155EEF]' />
+        {!isMobile && <span className='text-[#155EEF]'>{t('common.operation.download')}</span>}
+      </Button>
     </CSVDownloader>
   )
 }

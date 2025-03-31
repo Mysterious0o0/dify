@@ -13,7 +13,6 @@ type Params = {
   passedInAvailableNodes?: Node[]
 }
 
-// TODO: loop type?
 const useAvailableVarList = (nodeId: string, {
   onlyLeafNodeVar,
   filterVar,

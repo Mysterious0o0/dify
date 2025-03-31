@@ -19,7 +19,7 @@ const ShortcutsName = ({
         keys.map(key => (
           <div
             key={key}
-            className='system-kbd flex h-4 w-4 items-center justify-center rounded-[4px] bg-components-kbd-bg-gray capitalize'
+            className='w-4 h-4 flex items-center justify-center bg-components-kbd-bg-gray rounded-[4px] system-kbd capitalize'
           >
             {getKeyboardKeyNameBySystem(key)}
           </div>

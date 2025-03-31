@@ -93,7 +93,7 @@ export const EditSlice: FC<EditSliceProps> = (props) => {
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className='inline-flex items-center justify-center rounded-lg bg-components-actionbar-bg p-1 shadow'
+            className='p-1 rounded-lg bg-components-actionbar-bg shadow inline-flex items-center justify-center'
             onMouseEnter={() => setDelBtnHover(true)}
             onMouseLeave={() => setDelBtnHover(false)}
           >
@@ -105,7 +105,7 @@ export const EditSlice: FC<EditSliceProps> = (props) => {
               }}
               state={ActionButtonState.Destructive}
             >
-              <RiDeleteBinLine className='h-4 w-4' />
+              <RiDeleteBinLine className='w-4 h-4' />
             </ActionButton>
           </span>
         </FloatingFocusManager>}

@@ -105,13 +105,12 @@ export const useNodeIterationInteractions = () => {
       handleNodeIterationRerender(parentId)
   }, [store, handleNodeIterationRerender])
 
-  const handleNodeIterationChildrenCopy = useCallback((nodeId: string, newNodeId: string, idMapping: Record<string, string>) => {
+  const handleNodeIterationChildrenCopy = useCallback((nodeId: string, newNodeId: string) => {
     const { getNodes } = store.getState()
     const nodes = getNodes()
     const childrenNodes = nodes.filter(n => n.parentId === nodeId && n.type !== CUSTOM_ITERATION_START_NODE)
-    const newIdMapping = { ...idMapping }
 
-    const copyChildren = childrenNodes.map((child, index) => {
+    return childrenNodes.map((child, index) => {
       const childNodeType = child.data.type as BlockEnum
       const nodesWithSameType = nodes.filter(node => node.data.type === childNodeType)
       const { newNode } = generateNewNode({
@@ -132,14 +131,8 @@ export const useNodeIterationInteractions = () => {
         zIndex: child.zIndex,
       })
       newNode.id = `${newNodeId}${newNode.id + index}`
-      newIdMapping[child.id] = newNode.id
       return newNode
     })
-
-    return {
-      copyChildren,
-      newIdMapping,
-    }
   }, [store, t])
 
   return {

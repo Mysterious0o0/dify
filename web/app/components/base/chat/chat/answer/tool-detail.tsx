@@ -30,34 +30,34 @@ const ToolDetail = ({
     >
       <div
         className={cn(
-          'system-xs-medium flex cursor-pointer items-center px-2.5 py-2 text-text-tertiary',
+          'flex items-center system-xs-medium text-text-tertiary px-2.5 py-2 cursor-pointer',
           expand && 'pb-1.5',
         )}
         onClick={() => setExpand(!expand)}
       >
-        {isFinished && <RiHammerFill className='mr-1 h-3.5 w-3.5' />}
-        {!isFinished && <RiLoader2Line className='mr-1 h-3.5 w-3.5 animate-spin' />}
+        {isFinished && <RiHammerFill className='mr-1 w-3.5 h-3.5' />}
+        {!isFinished && <RiLoader2Line className='mr-1 w-3.5 h-3.5 animate-spin' />}
         {t(`tools.thought.${isFinished ? 'used' : 'using'}`)}
         <div className='mx-1 text-text-secondary'>{toolLabel}</div>
-        {!expand && <RiArrowRightSLine className='h-4 w-4' />}
-        {expand && <RiArrowDownSLine className='ml-auto h-4 w-4' />}
+        {!expand && <RiArrowRightSLine className='w-4 h-4' />}
+        {expand && <RiArrowDownSLine className='ml-auto w-4 h-4' />}
       </div>
       {
         expand && (
           <>
-            <div className='mx-1 mb-0.5 rounded-[10px] bg-components-panel-on-panel-item-bg text-text-secondary'>
-              <div className='system-xs-semibold-uppercase flex h-7 items-center justify-between px-2 pt-1'>
+            <div className='mb-0.5 mx-1 rounded-[10px] bg-components-panel-on-panel-item-bg text-text-secondary'>
+              <div className='flex items-center justify-between px-2 pt-1 h-7 system-xs-semibold-uppercase'>
                 {t('tools.thought.requestTitle')}
               </div>
-              <div className='code-xs-regular break-words px-3 pb-2 pt-1'>
+              <div className='pt-1 px-3 pb-2 code-xs-regular break-words'>
                 {input}
               </div>
             </div>
             <div className='mx-1 mb-1 rounded-[10px] bg-components-panel-on-panel-item-bg text-text-secondary'>
-              <div className='system-xs-semibold-uppercase flex h-7 items-center justify-between px-2 pt-1'>
+              <div className='flex items-center justify-between px-2 pt-1 h-7 system-xs-semibold-uppercase'>
                 {t('tools.thought.responseTitle')}
               </div>
-              <div className='code-xs-regular break-words px-3 pb-2 pt-1'>
+              <div className='pt-1 px-3 pb-2 code-xs-regular break-words'>
                 {output}
               </div>
             </div>

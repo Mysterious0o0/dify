@@ -102,6 +102,8 @@ class LindormVectorStore(BaseVector):
         if response["errors"]:
             for item in response["items"]:
                 print(f"{item['index']['status']}: {item['index']['error']['type']}")
+        else:
+            self.refresh()
 
     def get_ids_by_metadata_field(self, key: str, value: str):
         query: dict[str, Any] = {
@@ -165,19 +167,14 @@ class LindormVectorStore(BaseVector):
         if not all(isinstance(x, float) for x in query_vector):
             raise ValueError("All elements in query_vector should be floats")
 
-        top_k = kwargs.get("top_k", 3)
-        document_ids_filter = kwargs.get("document_ids_filter")
-        filters = []
-        if document_ids_filter:
-            filters.append({"terms": {"metadata.document_id": document_ids_filter}})
-        query = default_vector_search_query(query_vector=query_vector, k=top_k, filters=filters, **kwargs)
-
+        top_k = kwargs.get("top_k", 10)
+        query = default_vector_search_query(query_vector=query_vector, k=top_k, **kwargs)
         try:
             params = {}
             if self._using_ugc:
                 params["routing"] = self._routing
             response = self._client.search(index=self._collection_name, body=query, params=params)
-        except Exception:
+        except Exception as e:
             logger.exception(f"Error executing vector search, query: {query}")
             raise
 
@@ -208,11 +205,8 @@ class LindormVectorStore(BaseVector):
         must_not = kwargs.get("must_not")
         should = kwargs.get("should")
         minimum_should_match = kwargs.get("minimum_should_match", 0)
-        top_k = kwargs.get("top_k", 3)
-        filters = kwargs.get("filter", [])
-        document_ids_filter = kwargs.get("document_ids_filter")
-        if document_ids_filter:
-            filters.append({"terms": {"metadata.document_id": document_ids_filter}})
+        top_k = kwargs.get("top_k", 10)
+        filters = kwargs.get("filter")
         routing = self._routing
         full_text_query = default_text_search_query(
             query_text=query,
@@ -293,7 +287,7 @@ class LindormVectorStore(BaseVector):
 
 
 def default_text_mapping(dimension: int, method_name: str, **kwargs: Any) -> dict:
-    excludes_from_source = kwargs.get("excludes_from_source", False)
+    excludes_from_source = kwargs.get("excludes_from_source")
     analyzer = kwargs.get("analyzer", "ik_max_word")
     text_field = kwargs.get("text_field", Field.CONTENT_KEY.value)
     engine = kwargs["engine"]
@@ -353,13 +347,12 @@ def default_text_mapping(dimension: int, method_name: str, **kwargs: Any) -> dic
     }
 
     if excludes_from_source:
-        # e.g. {"excludes": ["vector_field"]}
-        mapping["mappings"]["_source"] = {"excludes": [vector_field]}
+        mapping["mappings"]["_source"] = {"excludes": excludes_from_source}  # e.g. {"excludes": ["vector_field"]}
 
     if using_ugc and method_name == "ivfpq":
         mapping["settings"]["index"]["knn_routing"] = True
         mapping["settings"]["index"]["knn.offline.construction"] = True
-    elif (using_ugc and method_name == "hnsw") or (using_ugc and method_name == "flat"):
+    elif using_ugc and method_name == "hnsw" or using_ugc and method_name == "flat":
         mapping["settings"]["index"]["knn_routing"] = True
     return mapping
 
@@ -456,7 +449,7 @@ def default_vector_search_query(
         "query": {"knn": {vector_field: {"vector": query_vector, "k": k}}},
     }
 
-    if filters is not None and len(filters) > 0:
+    if filters is not None:
         # when using filter, transform filter from List[Dict] to Dict as valid format
         filter_dict = {"bool": {"must": filters}} if len(filters) > 1 else filters[0]
         search_query["query"]["knn"][vector_field]["filter"] = filter_dict  # filter should be Dict

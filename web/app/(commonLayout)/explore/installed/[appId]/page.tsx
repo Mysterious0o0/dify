@@ -3,14 +3,14 @@ import React from 'react'
 import Main from '@/app/components/explore/installed-app'
 
 export type IInstalledAppProps = {
-  params: Promise<{
+  params: {
     appId: string
-  }>
+  }
 }
 
-const InstalledApp: FC<IInstalledAppProps> = async ({ params }) => {
+const InstalledApp: FC<IInstalledAppProps> = ({ params: { appId } }) => {
   return (
-    <Main id={(await params).appId} />
+    <Main id={appId} />
   )
 }
 export default React.memo(InstalledApp)

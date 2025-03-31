@@ -1,8 +1,8 @@
 .item {
-  max-height: 200px;
+  height: 200px;
   margin-right: 8px;
   margin-bottom: 8px;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   border-radius: 8px;
   cursor: pointer;

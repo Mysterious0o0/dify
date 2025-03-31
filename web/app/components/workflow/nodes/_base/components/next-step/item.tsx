@@ -39,15 +39,15 @@ const Item = ({
 
   return (
     <div
-      className='group relative flex h-9 cursor-pointer items-center rounded-lg border-[0.5px] border-divider-regular bg-background-default px-2 text-xs text-text-secondary shadow-xs last-of-type:mb-0 hover:bg-background-default-hover'
+      className='relative group flex items-center last-of-type:mb-0 px-2 h-9 rounded-lg border-[0.5px] border-divider-regular bg-background-default hover:bg-background-default-hover shadow-xs text-xs text-text-secondary cursor-pointer'
     >
       <BlockIcon
         type={data.type}
         toolIcon={toolIcon}
-        className='mr-1.5 shrink-0'
+        className='shrink-0 mr-1.5'
       />
       <div
-        className='system-xs-medium grow truncate text-text-secondary'
+        className='grow system-xs-medium text-text-secondary truncate'
         title={data.title}
       >
         {data.title}
@@ -56,7 +56,7 @@ const Item = ({
         !nodesReadOnly && (
           <>
             <Button
-              className='mr-1 hidden shrink-0 group-hover:flex'
+              className='hidden group-hover:flex shrink-0 mr-1'
               size='small'
               onClick={() => handleNodeSelect(nodeId)}
             >
@@ -64,7 +64,7 @@ const Item = ({
             </Button>
             <div
               className={cn(
-                'hidden shrink-0 items-center group-hover:flex',
+                'hidden shrink-0 group-hover:flex items-center',
                 open && 'flex',
               )}
             >

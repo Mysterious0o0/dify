@@ -95,15 +95,7 @@ class ChromaVector(BaseVector):
 
     def search_by_vector(self, query_vector: list[float], **kwargs: Any) -> list[Document]:
         collection = self._client.get_or_create_collection(self._collection_name)
-        document_ids_filter = kwargs.get("document_ids_filter")
-        if document_ids_filter:
-            results: QueryResult = collection.query(
-                query_embeddings=query_vector,
-                n_results=kwargs.get("top_k", 4),
-                where={"document_id": {"$in": document_ids_filter}},  # type: ignore
-            )
-        else:
-            results: QueryResult = collection.query(query_embeddings=query_vector, n_results=kwargs.get("top_k", 4))  # type: ignore
+        results: QueryResult = collection.query(query_embeddings=query_vector, n_results=kwargs.get("top_k", 4))
         score_threshold = float(kwargs.get("score_threshold") or 0.0)
 
         # Check if results contain data
@@ -119,9 +111,8 @@ class ChromaVector(BaseVector):
         for index in range(len(ids)):
             distance = distances[index]
             metadata = dict(metadatas[index])
-            score = 1 - distance
-            if score > score_threshold:
-                metadata["score"] = score
+            if distance >= score_threshold:
+                metadata["score"] = distance
                 doc = Document(
                     page_content=documents[index],
                     metadata=metadata,

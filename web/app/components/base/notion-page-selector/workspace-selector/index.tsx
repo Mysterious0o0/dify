@@ -1,9 +1,10 @@
 'use client'
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
-import { RiArrowDownSLine } from '@remixicon/react'
+import { Menu, Transition } from '@headlessui/react'
 import NotionIcon from '../../notion-icon'
+import s from './index.module.css'
+import cn from '@/utils/classnames'
 import type { DataSourceNotionWorkspace } from '@/models/common'
 
 type WorkspaceSelectorProps = {
@@ -24,16 +25,16 @@ export default function WorkspaceSelector({
       {
         ({ open }) => (
           <>
-            <MenuButton className={`flex h-7 items-center justify-center rounded-md p-1 pr-2 hover:bg-state-base-hover ${open && 'bg-state-base-hover'} cursor-pointer`}>
+            <Menu.Button className={`flex items-center justify-center h-7 rounded-md hover:bg-gray-50 ${open && 'bg-gray-50'} cursor-pointer`}>
               <NotionIcon
-                className='mr-2'
+                className='ml-1 mr-2'
                 src={currentWorkspace?.workspace_icon}
                 name={currentWorkspace?.workspace_name}
               />
-              <div className='mr-1 w-[90px] truncate text-left text-sm font-medium text-text-secondary' title={currentWorkspace?.workspace_name}>{currentWorkspace?.workspace_name}</div>
-              {/* <div className='mr-1 px-1 h-[18px] bg-primary-50 rounded-lg text-xs font-medium text-text-accent'>{currentWorkspace?.pages.length}</div> */}
-              <RiArrowDownSLine className='h-4 w-4 text-text-secondary' />
-            </MenuButton>
+              <div className='mr-1 w-[90px] text-left text-sm font-medium text-gray-700 truncate' title={currentWorkspace?.workspace_name}>{currentWorkspace?.workspace_name}</div>
+              <div className='mr-1 px-1 h-[18px] bg-primary-50 rounded-lg text-xs font-medium text-primary-600'>{currentWorkspace?.pages.length}</div>
+              <div className={cn(s['down-arrow'], 'mr-2 w-3 h-3')} />
+            </Menu.Button>
             <Transition
               as={Fragment}
               enter="transition ease-out duration-100"
@@ -43,34 +44,37 @@ export default function WorkspaceSelector({
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <MenuItems
-                className='absolute left-0 top-8 z-10 w-80
-                  origin-top-right rounded-lg border-[0.5px]
-                  border-components-panel-border bg-components-panel-bg-blur shadow-lg shadow-shadow-shadow-5 backdrop-blur-[5px]'
+              <Menu.Items
+                className={cn(
+                  s.popup,
+                  `absolute left-0 top-8 w-80
+                  origin-top-right rounded-lg bg-white
+                  border-[0.5px] border-gray-200`,
+                )}
               >
-                <div className="max-h-50 overflow-auto p-1">
+                <div className="p-1 max-h-50 overflow-auto">
                   {
                     items.map(item => (
-                      <MenuItem key={item.workspace_id}>
+                      <Menu.Item key={item.workspace_id}>
                         <div
-                          className='flex h-9 cursor-pointer items-center rounded-lg px-3 hover:bg-state-base-hover'
+                          className='flex items-center px-3 h-9 hover:bg-gray-50 cursor-pointer'
                           onClick={() => onSelect(item.workspace_id)}
                         >
                           <NotionIcon
-                            className='mr-2 shrink-0'
+                            className='shrink-0 mr-2'
                             src={item.workspace_icon}
                             name={item.workspace_name}
                           />
-                          <div className='system-sm-medium mr-2 grow truncate text-text-secondary' title={item.workspace_name}>{item.workspace_name}</div>
-                          <div className='system-xs-medium shrink-0 text-text-accent'>
+                          <div className='grow mr-2 text-sm text-gray-700 truncate' title={item.workspace_name}>{item.workspace_name}</div>
+                          <div className='shrink-0 text-xs font-medium text-primary-600'>
                             {item.pages.length} {t('common.dataSource.notion.selector.pageSelected')}
                           </div>
                         </div>
-                      </MenuItem>
+                      </Menu.Item>
                     ))
                   }
                 </div>
-              </MenuItems>
+              </Menu.Items>
             </Transition>
           </>
         )

@@ -1,5 +1,5 @@
 'use client'
-import type { FC, ReactNode } from 'react'
+import type { FC } from 'react'
 import React, { useCallback, useRef } from 'react'
 import {
   RiDeleteBinLine,
@@ -41,7 +41,7 @@ type Props = {
   className?: string
   headerClassName?: string
   instanceId?: string
-  title: string | React.JSX.Element
+  title: string | JSX.Element
   value: string
   onChange: (value: string) => void
   readOnly?: boolean
@@ -68,14 +68,6 @@ type Props = {
   onEditionTypeChange?: (editionType: EditionType) => void
   varList?: Variable[]
   handleAddVariable?: (payload: any) => void
-  containerBackgroundClassName?: string
-  gradientBorder?: boolean
-  titleTooltip?: ReactNode
-  inputClassName?: string
-  editorContainerClassName?: string
-  placeholderClassName?: string
-  titleClassName?: string
-  required?: boolean
 }
 
 const Editor: FC<Props> = ({
@@ -104,14 +96,6 @@ const Editor: FC<Props> = ({
   handleAddVariable,
   onGenerated,
   modelConfig,
-  containerBackgroundClassName: containerClassName,
-  gradientBorder = true,
-  titleTooltip,
-  inputClassName,
-  placeholderClassName,
-  titleClassName,
-  editorContainerClassName,
-  required,
 }) => {
   const { t } = useTranslation()
   const { eventEmitter } = useEventEmitterContextContext()
@@ -145,20 +129,17 @@ const Editor: FC<Props> = ({
 
   return (
     <Wrap className={cn(className, wrapClassName)} style={wrapStyle} isInNode isExpand={isExpand}>
-      <div ref={ref} className={cn(isFocus ? (gradientBorder && s.gradientBorder) : 'bg-gray-100', isExpand && 'h-full', '!rounded-[9px] p-0.5', containerClassName)}>
-        <div className={cn(isFocus ? 'bg-gray-50' : 'bg-gray-100', isExpand && 'flex h-full flex-col', 'rounded-lg', containerClassName)}>
-          <div className={cn('flex items-center justify-between pl-3 pr-2 pt-1', headerClassName)}>
-            <div className='flex gap-2'>
-              <div className={cn('text-xs font-semibold uppercase leading-4 text-gray-700', titleClassName)}>{title} {required && <span className='text-red-500'>*</span>}</div>
-              {titleTooltip && <Tooltip popupContent={titleTooltip} />}
-            </div>
+      <div ref={ref} className={cn(isFocus ? s.gradientBorder : 'bg-gray-100', isExpand && 'h-full', '!rounded-[9px] p-0.5')}>
+        <div className={cn(isFocus ? 'bg-gray-50' : 'bg-gray-100', isExpand && 'h-full flex flex-col', 'rounded-lg')}>
+          <div className={cn(headerClassName, 'pt-1 pl-3 pr-2 flex justify-between items-center')}>
+            <div className='leading-4 text-xs font-semibold text-gray-700 uppercase'>{title}</div>
             <div className='flex items-center'>
-              <div className='text-xs font-medium leading-[18px] text-gray-500'>{value?.length || 0}</div>
+              <div className='leading-[18px] text-xs font-medium text-gray-500'>{value?.length || 0}</div>
               {isSupportPromptGenerator && (
                 <PromptGeneratorBtn className='ml-[5px]' onGenerated={onGenerated} modelConfig={modelConfig} />
               )}
 
-              <div className='ml-2 mr-2 h-3 w-px bg-gray-200'></div>
+              <div className='w-px h-3 ml-2 mr-2 bg-gray-200'></div>
               {/* Operations */}
               <div className='flex items-center space-x-[2px]'>
                 {isSupportJinja && (
@@ -171,8 +152,8 @@ const Editor: FC<Props> = ({
                     }
                     needsDelay
                   >
-                    <div className={cn(editionType === EditionType.jinja2 && 'border-black/5 bg-white', 'flex h-[22px] items-center space-x-0.5 rounded-[5px] border border-transparent px-1.5 hover:border-black/5')}>
-                      <Jinja className='h-3 w-6 text-gray-300' />
+                    <div className={cn(editionType === EditionType.jinja2 && 'border-black/5 bg-white', 'flex h-[22px] items-center px-1.5 rounded-[5px] border border-transparent hover:border-black/5 space-x-0.5')}>
+                      <Jinja className='w-6 h-3 text-gray-300' />
                       <Switch
                         size='sm'
                         defaultValue={editionType === EditionType.jinja2}
@@ -189,24 +170,24 @@ const Editor: FC<Props> = ({
                     popupContent={`${t('workflow.common.insertVarTip')}`}
                   >
                     <ActionButton onClick={handleInsertVariable}>
-                      <Variable02 className='h-4 w-4' />
+                      <Variable02 className='w-4 h-4' />
                     </ActionButton>
                   </Tooltip>
                 )}
                 {showRemove && (
                   <ActionButton onClick={onRemove}>
-                    <RiDeleteBinLine className='h-4 w-4' />
+                    <RiDeleteBinLine className='w-4 h-4' />
                   </ActionButton>
                 )}
                 {!isCopied
                   ? (
                     <ActionButton onClick={handleCopy}>
-                      <Clipboard className='h-4 w-4' />
+                      <Clipboard className='w-4 h-4' />
                     </ActionButton>
                   )
                   : (
                     <ActionButton>
-                      <ClipboardCheck className='h-4 w-4' />
+                      <ClipboardCheck className='w-4 h-4' />
                     </ActionButton>
                   )
                 }
@@ -217,16 +198,15 @@ const Editor: FC<Props> = ({
           </div>
 
           {/* Min: 80 Max: 560. Header: 24 */}
-          <div className={cn('pb-2', isExpand && 'flex grow flex-col')}>
+          <div className={cn('pb-2', isExpand && 'flex flex-col grow')}>
             {!(isSupportJinja && editionType === EditionType.jinja2)
               ? (
-                <div className={cn(isExpand ? 'grow' : 'max-h-[536px]', 'relative min-h-[56px] overflow-y-auto  px-3', editorContainerClassName)}>
+                <div className={cn(isExpand ? 'grow' : 'max-h-[536px]', 'relative px-3 min-h-[56px]  overflow-y-auto')}>
                   <PromptEditor
                     key={controlPromptEditorRerenderKey}
-                    placeholderClassName={placeholderClassName}
                     instanceId={instanceId}
                     compact
-                    className={cn('min-h-[56px]', inputClassName)}
+                    className='min-h-[56px]'
                     style={isExpand ? { height: editorExpandHeight - 5 } : {}}
                     value={value}
                     contextBlock={{
@@ -274,7 +254,7 @@ const Editor: FC<Props> = ({
                 </div>
               )
               : (
-                <div className={cn(isExpand ? 'grow' : 'max-h-[536px]', 'relative min-h-[56px] overflow-y-auto  px-3', editorContainerClassName)}>
+                <div className={cn(isExpand ? 'grow' : 'max-h-[536px]', 'relative px-3 min-h-[56px]  overflow-y-auto')}>
                   <CodeEditor
                     availableVars={nodesOutputVars || []}
                     varList={varList}
@@ -286,7 +266,6 @@ const Editor: FC<Props> = ({
                     onChange={onChange}
                     noWrapper
                     isExpand={isExpand}
-                    className={inputClassName}
                   />
                 </div>
               )}

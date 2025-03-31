@@ -47,14 +47,14 @@ const FileInAttachmentItem = ({
   return (
     <>
       <div className={cn(
-        'flex h-12 items-center rounded-lg border-[0.5px] border-components-panel-border bg-components-panel-on-panel-item-bg pr-3 shadow-xs',
-        progress === -1 && 'border-state-destructive-border bg-state-destructive-hover',
+        'flex items-center pr-3 h-12 rounded-lg border-[0.5px] border-components-panel-border bg-components-panel-on-panel-item-bg shadow-xs',
+        progress === -1 && 'bg-state-destructive-hover border-state-destructive-border',
       )}>
-        <div className='flex h-12 w-12 items-center justify-center'>
+        <div className='flex items-center justify-center w-12 h-12'>
           {
             isImageFile && (
               <FileImageRender
-                className='h-8 w-8'
+                className='w-8 h-8'
                 imageUrl={base64Url || url || ''}
               />
             )
@@ -68,14 +68,14 @@ const FileInAttachmentItem = ({
             )
           }
         </div>
-        <div className='mr-1 w-0 grow'>
+        <div className='grow w-0 mr-1'>
           <div
-            className='system-xs-medium mb-0.5 flex items-center truncate text-text-secondary'
+            className='flex items-center mb-0.5 system-xs-medium text-text-secondary truncate'
             title={file.name}
           >
             <div className='truncate'>{name}</div>
           </div>
-          <div className='system-2xs-medium-uppercase flex items-center text-text-tertiary'>
+          <div className='flex items-center system-2xs-medium-uppercase text-text-tertiary'>
             {
               ext && (
                 <span>{ext.toLowerCase()}</span>
@@ -83,7 +83,7 @@ const FileInAttachmentItem = ({
             }
             {
               ext && (
-                <span className='system-2xs-medium mx-1'>•</span>
+                <span className='mx-1 system-2xs-medium'>•</span>
               )
             }
             {
@@ -93,7 +93,7 @@ const FileInAttachmentItem = ({
             }
           </div>
         </div>
-        <div className='flex shrink-0 items-center'>
+        <div className='shrink-0 flex items-center'>
           {
             progress >= 0 && !fileIsUploaded(file) && (
               <ProgressCircle
@@ -108,21 +108,21 @@ const FileInAttachmentItem = ({
                 className='mr-1'
                 onClick={() => onReUpload?.(id)}
               >
-                <ReplayLine className='h-4 w-4 text-text-tertiary' />
+                <ReplayLine className='w-4 h-4 text-text-tertiary' />
               </ActionButton>
             )
           }
           {
             showDeleteAction && (
               <ActionButton onClick={() => onRemove?.(id)}>
-                <RiDeleteBinLine className='h-4 w-4' />
+                <RiDeleteBinLine className='w-4 h-4' />
               </ActionButton>
             )
           }
           {
             canPreview && isImageFile && (
               <ActionButton className='mr-1' onClick={() => setImagePreviewUrl(url || '')}>
-                <RiEyeLine className='h-4 w-4' />
+                <RiEyeLine className='w-4 h-4' />
               </ActionButton>
             )
           }
@@ -132,7 +132,7 @@ const FileInAttachmentItem = ({
                 e.stopPropagation()
                 downloadFile(url || base64Url || '', name)
               }}>
-                <RiDownloadLine className='h-4 w-4' />
+                <RiDownloadLine className='w-4 h-4' />
               </ActionButton>
             )
           }

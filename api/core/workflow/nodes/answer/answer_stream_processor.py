@@ -35,7 +35,7 @@ class AnswerStreamProcessor(StreamProcessor):
 
                 yield event
             elif isinstance(event, NodeRunStreamChunkEvent):
-                if event.in_iteration_id or event.in_loop_id:
+                if event.in_iteration_id:
                     yield event
                     continue
 
@@ -82,7 +82,7 @@ class AnswerStreamProcessor(StreamProcessor):
         :param event: node run succeeded event
         :return:
         """
-        for answer_node_id in self.route_position:
+        for answer_node_id, position in self.route_position.items():
             # all depends on answer node id not in rest node ids
             if event.route_node_state.node_id != answer_node_id and (
                 answer_node_id not in self.rest_node_ids
@@ -155,13 +155,11 @@ class AnswerStreamProcessor(StreamProcessor):
         for answer_node_id, route_position in self.route_position.items():
             if answer_node_id not in self.rest_node_ids:
                 continue
-            # exclude current node id
-            answer_dependencies = self.generate_routes.answer_dependencies
-            if event.node_id in answer_dependencies[answer_node_id]:
-                answer_dependencies[answer_node_id].remove(event.node_id)
-            answer_dependencies_ids = answer_dependencies.get(answer_node_id, [])
+
             # all depends on answer node id not in rest node ids
-            if all(dep_id not in self.rest_node_ids for dep_id in answer_dependencies_ids):
+            if all(
+                dep_id not in self.rest_node_ids for dep_id in self.generate_routes.answer_dependencies[answer_node_id]
+            ):
                 if route_position >= len(self.generate_routes.answer_generate_route[answer_node_id]):
                     continue
 

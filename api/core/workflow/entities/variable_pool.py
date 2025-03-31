@@ -7,13 +7,14 @@ from pydantic import BaseModel, Field
 
 from core.file import File, FileAttribute, file_manager
 from core.variables import Segment, SegmentGroup, Variable
-from core.variables.segments import FileSegment, NoneSegment
+from core.variables.segments import FileSegment
 from factories import variable_factory
 
 from ..constants import CONVERSATION_VARIABLE_NODE_ID, ENVIRONMENT_VARIABLE_NODE_ID, SYSTEM_VARIABLE_NODE_ID
 from ..enums import SystemVariableKey
 
 VariableValue = Union[str, int, float, dict, list, File]
+
 
 VARIABLE_PATTERN = re.compile(r"\{\{#([a-zA-Z0-9_]{1,50}(?:\.[a-zA-Z_][a-zA-Z0-9_]{0,29}){1,10})#\}\}")
 
@@ -130,13 +131,11 @@ class VariablePool(BaseModel):
             if attr not in {item.value for item in FileAttribute}:
                 return None
             value = self.get(selector)
-            if not isinstance(value, FileSegment | NoneSegment):
+            if not isinstance(value, FileSegment):
                 return None
-            if isinstance(value, FileSegment):
-                attr = FileAttribute(attr)
-                attr_value = file_manager.get_attr(file=value.value, attr=attr)
-                return variable_factory.build_segment(attr_value)
-            return value
+            attr = FileAttribute(attr)
+            attr_value = file_manager.get_attr(file=value.value, attr=attr)
+            return variable_factory.build_segment(attr_value)
 
         return value
 

@@ -83,8 +83,8 @@ const Doc = ({ appDetail }: IDocProps) => {
       <div className={`fixed right-8 top-32 z-10 transition-all ${isTocExpanded ? 'w-64' : 'w-10'}`}>
         {isTocExpanded
           ? (
-            <nav className="toc w-full rounded-lg bg-gray-50 p-4 shadow-md">
-              <div className="mb-4 flex items-center justify-between">
+            <nav className="toc w-full bg-gray-50 p-4 rounded-lg shadow-md">
+              <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold">{t('appApi.develop.toc')}</h3>
                 <button
                   onClick={() => setIsTocExpanded(false)}
@@ -98,7 +98,7 @@ const Doc = ({ appDetail }: IDocProps) => {
                   <li key={index}>
                     <a
                       href={item.href}
-                      className="text-gray-600 transition-colors duration-200 hover:text-gray-900 hover:underline"
+                      className="text-gray-600 hover:text-gray-900 hover:underline transition-colors duration-200"
                       onClick={e => handleTocClick(e, item)}
                     >
                       {item.text}
@@ -111,13 +111,13 @@ const Doc = ({ appDetail }: IDocProps) => {
           : (
             <button
               onClick={() => setIsTocExpanded(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 shadow-md transition-colors duration-200 hover:bg-gray-100"
+              className="w-10 h-10 bg-gray-50 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors duration-200"
             >
-              <RiListUnordered className="h-6 w-6" />
+              <RiListUnordered className="w-6 h-6" />
             </button>
           )}
       </div>
-      <article className="prose-xl prose" >
+      <article className="prose prose-xl" >
         {(appDetail?.mode === 'chat' || appDetail?.mode === 'agent-chat') && (
           (() => {
             switch (locale) {

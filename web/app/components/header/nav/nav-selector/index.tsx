@@ -6,7 +6,7 @@ import {
   RiArrowDownSLine,
   RiArrowRightSLine,
 } from '@remixicon/react'
-import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
 import { debounce } from 'lodash-es'
 import cn from '@/utils/classnames'
@@ -57,53 +57,53 @@ const NavSelector = ({ curNav, navs, createText, isApp, onCreate, onLoadmore }: 
       <Menu as="div" className="relative inline-block text-left">
         {({ open }) => (
           <>
-            <MenuButton className={cn(
-              'hover:hover:bg-components-main-nav-nav-button-bg-active-hover group inline-flex h-7 w-full items-center justify-center rounded-[10px] pl-2 pr-2.5 text-[14px] font-semibold text-components-main-nav-nav-button-text-active',
+            <Menu.Button className={cn(
+              'group inline-flex items-center w-full h-7 justify-center rounded-[10px] pl-2 pr-2.5 text-[14px] font-semibold text-components-main-nav-nav-button-text-active hover:hover:bg-components-main-nav-nav-button-bg-active-hover',
               open && 'bg-components-main-nav-nav-button-bg-active',
             )}>
               <div className='max-w-[180px] truncate' title={curNav?.name}>{curNav?.name}</div>
               <RiArrowDownSLine
-                className={cn('ml-1 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100', open && '!opacity-100')}
+                className={cn('shrink-0 w-3 h-3 ml-1 opacity-50 group-hover:opacity-100', open && '!opacity-100')}
                 aria-hidden="true"
               />
-            </MenuButton>
-            <MenuItems
+            </Menu.Button>
+            <Menu.Items
               className="
                 absolute -left-11 right-0 mt-1.5 w-60 max-w-80
-                origin-top-right divide-y divide-gray-100 rounded-lg bg-white
+                divide-y divide-gray-100 origin-top-right rounded-lg bg-white
                 shadow-lg
               "
             >
-              <div className="overflow-auto px-1 py-1" style={{ maxHeight: '50vh' }} onScroll={handleScroll}>
+              <div className="px-1 py-1 overflow-auto" style={{ maxHeight: '50vh' }} onScroll={handleScroll}>
                 {
                   navs.map(nav => (
-                    <MenuItems key={nav.id}>
-                      <div className='flex w-full cursor-pointer items-center truncate rounded-lg px-3 py-[6px] text-[14px] font-normal text-gray-700 hover:bg-gray-100' onClick={() => {
+                    <Menu.Item key={nav.id}>
+                      <div className='flex items-center w-full px-3 py-[6px] text-gray-700 text-[14px] rounded-lg font-normal hover:bg-gray-100 cursor-pointer truncate' onClick={() => {
                         if (curNav?.id === nav.id)
                           return
                         setAppDetail()
                         router.push(nav.link)
                       }} title={nav.name}>
-                        <div className='relative mr-2 h-6 w-6 rounded-md'>
-                          <AppIcon size='tiny' iconType={nav.icon_type} icon={nav.icon} background={nav.icon_background} imageUrl={nav.icon_url} />
+                        <div className='relative w-6 h-6 mr-2 rounded-md'>
+                          <AppIcon size='tiny' iconType={nav.icon_type} icon={nav.icon} background={nav.icon_background} imageUrl={nav.icon_url}/>
                           {!!nav.mode && (
                             <span className={cn(
-                              'absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded border-[0.5px] border-[rgba(0,0,0,0.02)] bg-white p-0.5 shadow-sm',
+                              'absolute w-3.5 h-3.5 -bottom-0.5 -right-0.5 p-0.5 bg-white rounded border-[0.5px] border-[rgba(0,0,0,0.02)] shadow-sm',
                             )}>
                               {nav.mode === 'advanced-chat' && (
-                                <ChatBot className='h-2.5 w-2.5 text-[#1570EF]' />
+                                <ChatBot className='w-2.5 h-2.5 text-[#1570EF]' />
                               )}
                               {nav.mode === 'agent-chat' && (
-                                <CuteRobot className='h-2.5 w-2.5 text-indigo-600' />
+                                <CuteRobot className='w-2.5 h-2.5 text-indigo-600' />
                               )}
                               {nav.mode === 'chat' && (
-                                <ChatBot className='h-2.5 w-2.5 text-[#1570EF]' />
+                                <ChatBot className='w-2.5 h-2.5 text-[#1570EF]' />
                               )}
                               {nav.mode === 'completion' && (
-                                <AiText className='h-2.5 w-2.5 text-[#0E9384]' />
+                                <AiText className='w-2.5 h-2.5 text-[#0E9384]' />
                               )}
                               {nav.mode === 'workflow' && (
-                                <Route className='h-2.5 w-2.5 text-[#f79009]' />
+                                <Route className='w-2.5 h-2.5 text-[#f79009]' />
                               )}
                             </span>
                           )}
@@ -112,38 +112,38 @@ const NavSelector = ({ curNav, navs, createText, isApp, onCreate, onLoadmore }: 
                           {nav.name}
                         </div>
                       </div>
-                    </MenuItems>
+                    </Menu.Item>
                   ))
                 }
               </div>
               {!isApp && isCurrentWorkspaceEditor && (
-                <MenuButton className='w-full p-1'>
+                <Menu.Button className='p-1 w-full'>
                   <div onClick={() => onCreate('')} className={cn(
-                    'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-100',
+                    'flex items-center gap-2 px-3 py-[6px] rounded-lg cursor-pointer hover:bg-gray-100',
                   )}>
-                    <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] border border-[0.5px] border-gray-200 bg-gray-50'>
-                      <RiAddLine className='h-4 w-4 text-gray-500' />
+                    <div className='shrink-0 flex justify-center items-center w-6 h-6 bg-gray-50 rounded-[6px] border-[0.5px] border-gray-200 border'>
+                      <RiAddLine className='w-4 h-4 text-gray-500' />
                     </div>
-                    <div className='grow text-left text-[14px] font-normal text-gray-700'>{createText}</div>
+                    <div className='grow text-left font-normal text-[14px] text-gray-700'>{createText}</div>
                   </div>
-                </MenuButton>
+                </Menu.Button>
               )}
               {isApp && isCurrentWorkspaceEditor && (
-                <Menu as="div" className="relative h-full w-full">
+                <Menu as="div" className="relative w-full h-full">
                   {({ open }) => (
                     <>
-                      <MenuButton className='w-full p-1'>
+                      <Menu.Button className='p-1 w-full'>
                         <div className={cn(
-                          'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-100',
+                          'flex items-center gap-2 px-3 py-[6px] rounded-lg cursor-pointer hover:bg-gray-100',
                           open && '!bg-gray-100',
                         )}>
-                          <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] border border-[0.5px] border-gray-200 bg-gray-50'>
-                            <RiAddLine className='h-4 w-4 text-gray-500' />
+                          <div className='shrink-0 flex justify-center items-center w-6 h-6 bg-gray-50 rounded-[6px] border-[0.5px] border-gray-200 border'>
+                            <RiAddLine className='w-4 h-4 text-gray-500' />
                           </div>
-                          <div className='grow text-left text-[14px] font-normal text-gray-700'>{createText}</div>
-                          <RiArrowRightSLine className='h-3.5 w-3.5 shrink-0  text-gray-500' />
+                          <div className='grow text-left font-normal text-[14px] text-gray-700'>{createText}</div>
+                          <RiArrowRightSLine className='shrink-0 w-3.5 h-3.5  text-gray-500' />
                         </div>
-                      </MenuButton>
+                      </Menu.Button>
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-100"
@@ -153,32 +153,32 @@ const NavSelector = ({ curNav, navs, createText, isApp, onCreate, onLoadmore }: 
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <MenuItems className={cn(
-                          'absolute right-[-198px] top-[3px] z-10 min-w-[200px] rounded-lg border-[0.5px] border-gray-200 bg-white shadow-lg',
+                        <Menu.Items className={cn(
+                          'absolute top-[3px] right-[-198px] min-w-[200px] z-10 bg-white border-[0.5px] border-gray-200 rounded-lg shadow-lg',
                         )}>
                           <div className='p-1'>
-                            <div className={cn('flex cursor-pointer items-center rounded-lg px-3 py-[6px] font-normal text-gray-700 hover:bg-gray-100')} onClick={() => onCreate('blank')}>
-                              <FilePlus01 className='mr-2 h-4 w-4 shrink-0 text-gray-600' />
+                            <div className={cn('flex items-center px-3 py-[6px] rounded-lg cursor-pointer hover:bg-gray-100 text-gray-700 font-normal')} onClick={() => onCreate('blank')}>
+                              <FilePlus01 className='shrink-0 mr-2 w-4 h-4 text-gray-600' />
                               {t('app.newApp.startFromBlank')}
                             </div>
-                            <div className={cn('flex cursor-pointer items-center rounded-lg px-3 py-[6px] font-normal text-gray-700 hover:bg-gray-100')} onClick={() => onCreate('template')}>
-                              <FilePlus02 className='mr-2 h-4 w-4 shrink-0 text-gray-600' />
+                            <div className={cn('flex items-center px-3 py-[6px] rounded-lg cursor-pointer hover:bg-gray-100 text-gray-700 font-normal')} onClick={() => onCreate('template')}>
+                              <FilePlus02 className='shrink-0 mr-2 w-4 h-4 text-gray-600' />
                               {t('app.newApp.startFromTemplate')}
                             </div>
                           </div>
-                          <div className='border-t border-gray-100 p-1'>
-                            <div className={cn('flex cursor-pointer items-center rounded-lg px-3 py-[6px] font-normal text-gray-700 hover:bg-gray-100')} onClick={() => onCreate('dsl')}>
-                              <FileArrow01 className='mr-2 h-4 w-4 shrink-0 text-gray-600' />
+                          <div className='p-1 border-t border-gray-100'>
+                            <div className={cn('flex items-center px-3 py-[6px] rounded-lg cursor-pointer hover:bg-gray-100 text-gray-700 font-normal')} onClick={() => onCreate('dsl')}>
+                              <FileArrow01 className='shrink-0 mr-2 w-4 h-4 text-gray-600' />
                               {t('app.importDSL')}
                             </div>
                           </div>
-                        </MenuItems>
+                        </Menu.Items>
                       </Transition>
                     </>
                   )}
                 </Menu>
               )}
-            </MenuItems>
+            </Menu.Items>
           </>
         )}
       </Menu>

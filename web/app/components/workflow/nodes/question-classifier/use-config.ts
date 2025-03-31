@@ -124,23 +124,12 @@ const useConfig = (id: string, payload: QuestionClassifierNodeType) => {
     return [VarType.number, VarType.string].includes(varPayload.type)
   }, [])
 
-  const filterVisionInputVar = useCallback((varPayload: Var) => {
-    return [VarType.file, VarType.arrayFile].includes(varPayload.type)
-  }, [])
-
   const {
     availableVars,
     availableNodesWithParent,
   } = useAvailableVarList(id, {
     onlyLeafNodeVar: false,
     filterVar: filterInputVar,
-  })
-
-  const {
-    availableVars: availableVisionVars,
-  } = useAvailableVarList(id, {
-    onlyLeafNodeVar: false,
-    filterVar: filterVisionInputVar,
   })
 
   const hasSetBlockStatus = {
@@ -172,15 +161,13 @@ const useConfig = (id: string, payload: QuestionClassifierNodeType) => {
     handleRun,
     handleStop,
     runInputData,
-    runInputDataRef,
     setRunInputData,
     runResult,
   } = useOneStepRun<QuestionClassifierNodeType>({
     id,
     data: inputs,
     defaultRunInputData: {
-      'query': '',
-      '#files#': [],
+      query: '',
     },
   })
 
@@ -208,14 +195,6 @@ const useConfig = (id: string, payload: QuestionClassifierNodeType) => {
     setRunInputData(newPayload)
   }, [setRunInputData])
 
-  const visionFiles = runInputData['#files#']
-  const setVisionFiles = useCallback((newFiles: any[]) => {
-    setRunInputData({
-      ...runInputDataRef.current,
-      '#files#': newFiles,
-    })
-  }, [runInputDataRef, setRunInputData])
-
   const filterVar = useCallback((varPayload: Var) => {
     return varPayload.type === VarType.string
   }, [])
@@ -233,7 +212,6 @@ const useConfig = (id: string, payload: QuestionClassifierNodeType) => {
     hasSetBlockStatus,
     availableVars,
     availableNodesWithParent,
-    availableVisionVars,
     handleInstructionChange,
     varInputs,
     inputVarValues,
@@ -250,8 +228,6 @@ const useConfig = (id: string, payload: QuestionClassifierNodeType) => {
     query,
     setQuery,
     runResult,
-    visionFiles,
-    setVisionFiles,
   }
 }
 

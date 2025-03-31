@@ -7,17 +7,15 @@ import { init } from 'emoji-mart'
 import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
-import Input from '@/app/components/base/input'
+import cn from '@/utils/classnames'
 import Divider from '@/app/components/base/divider'
 import { searchEmoji } from '@/utils/emoji'
-import cn from '@/utils/classnames'
 
 declare global {
-  // eslint-disable-next-line ts/no-namespace
   namespace JSX {
-    // eslint-disable-next-line ts/consistent-type-definitions
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface IntrinsicElements {
-      'em-emoji': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
+      'em-emoji': React.DetailedHTMLProps< React.HTMLAttributes<HTMLElement>, HTMLElement >
     }
   }
 }
@@ -70,15 +68,15 @@ const EmojiPickerInner: FC<IEmojiPickerInnerProps> = ({
   }, [onSelect, selectedEmoji, selectedBackground])
 
   return <div className={cn(className)}>
-    <div className='flex w-full flex-col items-center px-3 pb-2'>
+    <div className='flex flex-col items-center w-full px-3 pb-2'>
       <div className="relative w-full">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3">
-          <MagnifyingGlassIcon className="h-5 w-5 text-text-quaternary" aria-hidden="true" />
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <MagnifyingGlassIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
         </div>
-        <Input
-          className="pl-10"
+        <input
           type="search"
           id="search"
+          className='block w-full h-10 px-3 pl-10 text-sm font-normal bg-gray-100 rounded-lg'
           placeholder="Search emojis..."
           onChange={async (e: ChangeEvent<HTMLInputElement>) => {
             if (e.target.value === '') {
@@ -93,22 +91,22 @@ const EmojiPickerInner: FC<IEmojiPickerInnerProps> = ({
         />
       </div>
     </div>
-    <Divider className='my-3' />
+    <Divider className='m-0 mb-3' />
 
-    <div className="max-h-[200px] w-full overflow-y-auto overflow-x-hidden px-3">
+    <div className="w-full max-h-[200px] overflow-x-hidden overflow-y-auto px-3">
       {isSearching && <>
         <div key={'category-search'} className='flex flex-col'>
-          <p className='system-xs-medium-uppercase mb-1 text-text-primary'>Search</p>
-          <div className='grid h-full w-full grid-cols-8 gap-1'>
+          <p className='font-medium uppercase text-xs text-[#101828] mb-1'>Search</p>
+          <div className='w-full h-full grid grid-cols-8 gap-1'>
             {searchedEmojis.map((emoji: string, index: number) => {
               return <div
                 key={`emoji-search-${index}`}
-                className='inline-flex h-10 w-10 items-center justify-center rounded-lg'
+                className='inline-flex w-10 h-10 rounded-lg items-center justify-center'
                 onClick={() => {
                   setSelectedEmoji(emoji)
                 }}
               >
-                <div className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg p-1 ring-components-input-border-hover ring-offset-1 hover:ring-1'>
+                <div className='cursor-pointer w-8 h-8 p-1 flex items-center justify-center rounded-lg hover:ring-1 ring-offset-1 ring-gray-300'>
                   <em-emoji id={emoji} />
                 </div>
               </div>
@@ -119,17 +117,17 @@ const EmojiPickerInner: FC<IEmojiPickerInnerProps> = ({
 
       {categories.map((category, index: number) => {
         return <div key={`category-${index}`} className='flex flex-col'>
-          <p className='system-xs-medium-uppercase mb-1 text-text-primary'>{category.id}</p>
-          <div className='grid h-full w-full grid-cols-8 gap-1'>
+          <p className='font-medium uppercase text-xs text-[#101828] mb-1'>{category.id}</p>
+          <div className='w-full h-full grid grid-cols-8 gap-1'>
             {category.emojis.map((emoji, index: number) => {
               return <div
                 key={`emoji-${index}`}
-                className='inline-flex h-10 w-10 items-center justify-center rounded-lg'
+                className='inline-flex w-10 h-10 rounded-lg items-center justify-center'
                 onClick={() => {
                   setSelectedEmoji(emoji)
                 }}
               >
-                <div className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg p-1 ring-components-input-border-hover ring-offset-1 hover:ring-1'>
+                <div className='cursor-pointer w-8 h-8 p-1 flex items-center justify-center rounded-lg hover:ring-1 ring-offset-1 ring-gray-300'>
                   <em-emoji id={emoji} />
                 </div>
               </div>
@@ -142,24 +140,24 @@ const EmojiPickerInner: FC<IEmojiPickerInnerProps> = ({
 
     {/* Color Select */}
     <div className={cn('p-3 pb-0', selectedEmoji === '' ? 'opacity-25' : '')}>
-      <p className='system-xs-medium-uppercase mb-2 text-text-primary'>Choose Style</p>
-      <div className='grid h-full w-full grid-cols-8 gap-1'>
+      <p className='font-medium uppercase text-xs text-[#101828] mb-2'>Choose Style</p>
+      <div className='w-full h-full grid grid-cols-8 gap-1'>
         {backgroundColors.map((color) => {
           return <div
             key={color}
             className={
               cn(
                 'cursor-pointer',
-                'ring-offset-1 hover:ring-1',
-                'inline-flex h-10 w-10 items-center justify-center rounded-lg',
-                color === selectedBackground ? 'ring-1 ring-components-input-border-hover' : '',
+                'hover:ring-1 ring-offset-1',
+                'inline-flex w-10 h-10 rounded-lg items-center justify-center',
+                color === selectedBackground ? 'ring-1 ring-gray-300' : '',
               )}
             onClick={() => {
               setSelectedBackground(color)
             }}
           >
             <div className={cn(
-              'flex h-8 w-8 items-center justify-center rounded-lg p-1',
+              'w-8 h-8 p-1 flex items-center justify-center rounded-lg',
             )
             } style={{ background: color }}>
               {selectedEmoji !== '' && <em-emoji id={selectedEmoji} />}

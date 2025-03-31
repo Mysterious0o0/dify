@@ -124,9 +124,18 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
       doSend(v.payload.message, v.payload.files)
   })
 
+  const varList = modelConfig.configs.prompt_variables.map((item: any) => {
+    return {
+      label: item.key,
+      value: inputs[item.key],
+    }
+  })
+
   return (
     <TextGeneration
-      className='flex h-full flex-col overflow-y-auto border-none'
+      className='flex flex-col h-full overflow-y-auto border-none'
+      innerClassName='grow flex flex-col'
+      contentClassName='grow'
       content={completion}
       isLoading={!completion && isResponding}
       isResponding={isResponding}
@@ -135,7 +144,8 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
       messageId={messageId}
       isError={false}
       onRetry={() => { }}
-      inSidePanel
+      appId={appId}
+      varList={varList}
     />
   )
 }

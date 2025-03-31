@@ -3,7 +3,6 @@ import type { ComponentProps, FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChunkingMode } from '@/models/datasets'
 import classNames from '@/utils/classnames'
-import { Markdown } from '@/app/components/base/markdown'
 
 type IContentProps = ComponentProps<'textarea'>
 
@@ -17,7 +16,7 @@ const Textarea: FC<IContentProps> = React.memo(({
   return (
     <textarea
       className={classNames(
-        'bg-transparent inset-0 outline-none border-none appearance-none resize-none w-full overflow-y-auto',
+        'disabled:bg-transparent inset-0 outline-none border-none appearance-none resize-none w-full overflow-y-auto',
         className,
       )}
       placeholder={placeholder}
@@ -53,7 +52,7 @@ const AutoResizeTextArea: FC<IAutoResizeTextAreaProps> = React.memo(({
     if (!textarea)
       return
     textarea.style.height = 'auto'
-    const lineHeight = Number.parseInt(getComputedStyle(textarea).lineHeight)
+    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight)
     const textareaHeight = Math.max(textarea.scrollHeight, lineHeight)
     textarea.style.height = `${textareaHeight}px`
   }, [value])
@@ -83,7 +82,7 @@ const AutoResizeTextArea: FC<IAutoResizeTextAreaProps> = React.memo(({
     <textarea
       ref={textareaRef}
       className={classNames(
-        'bg-transparent inset-0 outline-none border-none appearance-none resize-none w-full',
+        'disabled:bg-transparent inset-0 outline-none border-none appearance-none resize-none w-full',
         className,
       )}
       style={{
@@ -120,9 +119,9 @@ const QATextArea: FC<IQATextAreaProps> = React.memo(({
 
   return (
     <div ref={containerRef} className='h-full overflow-hidden'>
-      <div ref={labelRef} className='mb-1 text-xs font-medium text-text-tertiary'>QUESTION</div>
+      <div ref={labelRef} className='text-text-tertiary text-xs font-medium mb-1'>QUESTION</div>
       <AutoResizeTextArea
-        className='text-sm tracking-[-0.07px] text-text-secondary caret-[#295EFF]'
+        className='text-text-secondary text-sm tracking-[-0.07px] caret-[#295EFF]'
         value={question}
         placeholder={t('datasetDocuments.segment.questionPlaceholder') || ''}
         onChange={e => onQuestionChange(e.target.value)}
@@ -130,9 +129,9 @@ const QATextArea: FC<IQATextAreaProps> = React.memo(({
         containerRef={containerRef}
         labelRef={labelRef}
       />
-      <div className='mb-1 mt-6 text-xs font-medium text-text-tertiary'>ANSWER</div>
+      <div className='text-text-tertiary text-xs font-medium mb-1 mt-6'>ANSWER</div>
       <AutoResizeTextArea
-        className='text-sm tracking-[-0.07px] text-text-secondary caret-[#295EFF]'
+        className='text-text-secondary text-sm tracking-[-0.07px] caret-[#295EFF]'
         value={answer}
         placeholder={t('datasetDocuments.segment.answerPlaceholder') || ''}
         onChange={e => onAnswerChange?.(e.target.value)}
@@ -176,19 +175,9 @@ const ChunkContent: FC<IChunkContentProps> = ({
     />
   }
 
-  if (!isEditMode) {
-    return (
-      <Markdown
-        className='h-full w-full !text-text-secondary'
-        content={question}
-        customDisallowedElements={['input']}
-      />
-    )
-  }
-
   return (
     <Textarea
-      className='body-md-regular h-full w-full pb-6 tracking-[-0.07px] text-text-secondary caret-[#295EFF]'
+      className='h-full w-full pb-6 body-md-regular text-text-secondary tracking-[-0.07px] caret-[#295EFF]'
       value={question}
       placeholder={t('datasetDocuments.segment.contentPlaceholder') || ''}
       onChange={e => onQuestionChange(e.target.value)}

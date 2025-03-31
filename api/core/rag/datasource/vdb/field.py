@@ -11,4 +11,3 @@ class Field(Enum):
     TEXT_KEY = "text"
     PRIMARY_KEY = "id"
     DOC_ID = "metadata.doc_id"
-    DOCUMENT_ID = "metadata.document_id"

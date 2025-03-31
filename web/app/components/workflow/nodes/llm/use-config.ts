@@ -306,7 +306,6 @@ const useConfig = (id: string, payload: LLMNodeType) => {
     handleRun,
     handleStop,
     runInputData,
-    runInputDataRef,
     setRunInputData,
     runResult,
     toVarInputs,
@@ -332,27 +331,27 @@ const useConfig = (id: string, payload: LLMNodeType) => {
   const setInputVarValues = useCallback((newPayload: Record<string, any>) => {
     const newVars = {
       ...newPayload,
-      '#context#': runInputDataRef.current['#context#'],
-      '#files#': runInputDataRef.current['#files#'],
+      '#context#': runInputData['#context#'],
+      '#files#': runInputData['#files#'],
     }
     setRunInputData(newVars)
-  }, [runInputDataRef, setRunInputData])
+  }, [runInputData, setRunInputData])
 
   const contexts = runInputData['#context#']
   const setContexts = useCallback((newContexts: string[]) => {
     setRunInputData({
-      ...runInputDataRef.current,
+      ...runInputData,
       '#context#': newContexts,
     })
-  }, [runInputDataRef, setRunInputData])
+  }, [runInputData, setRunInputData])
 
   const visionFiles = runInputData['#files#']
   const setVisionFiles = useCallback((newFiles: any[]) => {
     setRunInputData({
-      ...runInputDataRef.current,
+      ...runInputData,
       '#files#': newFiles,
     })
-  }, [runInputDataRef, setRunInputData])
+  }, [runInputData, setRunInputData])
 
   const allVarStrArr = (() => {
     const arr = isChatModel ? (inputs.prompt_template as PromptItem[]).filter(item => item.edition_type !== EditionType.jinja2).map(item => item.text) : [(inputs.prompt_template as PromptItem).text]

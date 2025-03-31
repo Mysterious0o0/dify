@@ -12,14 +12,10 @@ export type InputNumberProps = {
   max?: number
   min?: number
   defaultValue?: number
-  disabled?: boolean
-  wrapClassName?: string
-  controlWrapClassName?: string
-  controlClassName?: string
 } & Omit<InputProps, 'value' | 'onChange' | 'size' | 'min' | 'max' | 'defaultValue'>
 
 export const InputNumber: FC<InputNumberProps> = (props) => {
-  const { unit, className, onChange, amount = 1, value, size = 'md', max, min, defaultValue, wrapClassName, controlWrapClassName, controlClassName, disabled, ...rest } = props
+  const { unit, className, onChange, amount = 1, value, size = 'md', max, min, defaultValue, ...rest } = props
 
   const isValidValue = (v: number) => {
     if (max && v > max)
@@ -30,8 +26,6 @@ export const InputNumber: FC<InputNumberProps> = (props) => {
   }
 
   const inc = () => {
-    if (disabled) return
-
     if (value === undefined) {
       onChange(defaultValue)
       return
@@ -42,8 +36,6 @@ export const InputNumber: FC<InputNumberProps> = (props) => {
     onChange(newValue)
   }
   const dec = () => {
-    if (disabled) return
-
     if (value === undefined) {
       onChange(defaultValue)
       return
@@ -54,7 +46,7 @@ export const InputNumber: FC<InputNumberProps> = (props) => {
     onChange(newValue)
   }
 
-  return <div className={classNames('flex', wrapClassName)}>
+  return <div className='flex'>
     <Input {...rest}
       // disable default controller
       type='text'
@@ -62,7 +54,6 @@ export const InputNumber: FC<InputNumberProps> = (props) => {
       value={value}
       max={max}
       min={min}
-      disabled={disabled}
       onChange={(e) => {
         if (e.target.value === '')
           onChange(undefined)
@@ -77,28 +68,17 @@ export const InputNumber: FC<InputNumberProps> = (props) => {
       }}
       unit={unit}
     />
-    <div className={classNames(
-      'flex flex-col bg-components-input-bg-normal rounded-r-md border-l border-divider-subtle text-text-tertiary focus:shadow-xs',
-      disabled && 'opacity-50 cursor-not-allowed',
-      controlWrapClassName)}
-    >
-      <button onClick={inc} disabled={disabled} className={classNames(
+    <div className='flex flex-col bg-components-input-bg-normal rounded-r-md border-l border-divider-subtle text-text-tertiary focus:shadow-xs'>
+      <button onClick={inc} className={classNames(
         size === 'sm' ? 'pt-1' : 'pt-1.5',
         'px-1.5 hover:bg-components-input-bg-hover',
-        disabled && 'cursor-not-allowed hover:bg-transparent',
-        controlClassName,
       )}>
         <RiArrowUpSLine className='size-3' />
       </button>
-      <button
-        onClick={dec}
-        disabled={disabled}
-        className={classNames(
-          size === 'sm' ? 'pb-1' : 'pb-1.5',
-          'px-1.5 hover:bg-components-input-bg-hover',
-          disabled && 'cursor-not-allowed hover:bg-transparent',
-          controlClassName,
-        )}>
+      <button onClick={dec} className={classNames(
+        size === 'sm' ? 'pb-1' : 'pb-1.5',
+        'px-1.5 hover:bg-components-input-bg-hover',
+      )}>
         <RiArrowDownSLine className='size-3' />
       </button>
     </div>

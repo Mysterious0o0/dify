@@ -9,7 +9,6 @@ from core.app.entities.app_invoke_entities import (
 )
 from core.callback_handler.index_tool_callback_handler import DatasetIndexToolCallbackHandler
 from core.model_manager import ModelInstance
-from core.model_runtime.entities.message_entities import ImagePromptMessageContent
 from core.moderation.base import ModerationError
 from core.rag.retrieval.dataset_retrieval import DatasetRetrieval
 from extensions.ext_database import db
@@ -44,16 +43,6 @@ class CompletionAppRunner(AppRunner):
         query = application_generate_entity.query
         files = application_generate_entity.files
 
-        image_detail_config = (
-            application_generate_entity.file_upload_config.image_config.detail
-            if (
-                application_generate_entity.file_upload_config
-                and application_generate_entity.file_upload_config.image_config
-            )
-            else None
-        )
-        image_detail_config = image_detail_config or ImagePromptMessageContent.DETAIL.LOW
-
         # Pre-calculate the number of tokens of the prompt messages,
         # and return the rest number of tokens by model context token size limit and max token size limit.
         # If the rest number of tokens is not enough, raise exception.
@@ -77,7 +66,6 @@ class CompletionAppRunner(AppRunner):
             inputs=inputs,
             files=files,
             query=query,
-            image_detail_config=image_detail_config,
         )
 
         # moderation
@@ -139,7 +127,6 @@ class CompletionAppRunner(AppRunner):
                 show_retrieve_source=app_config.additional_features.show_retrieve_source,
                 hit_callback=hit_callback,
                 message_id=message.id,
-                inputs=inputs,
             )
 
         # reorganize all inputs and template to prompt messages
@@ -153,7 +140,6 @@ class CompletionAppRunner(AppRunner):
             files=files,
             query=query,
             context=context,
-            image_detail_config=image_detail_config,
         )
 
         # check hosting moderation

@@ -59,8 +59,6 @@ import CustomNoteNode from './note-node'
 import { CUSTOM_NOTE_NODE } from './note-node/constants'
 import CustomIterationStartNode from './nodes/iteration-start'
 import { CUSTOM_ITERATION_START_NODE } from './nodes/iteration-start/constants'
-import CustomLoopStartNode from './nodes/loop-start'
-import { CUSTOM_LOOP_START_NODE } from './nodes/loop-start/constants'
 import Operator from './operator'
 import CustomEdge from './custom-edge'
 import CustomConnectionLine from './custom-connection-line'
@@ -74,7 +72,6 @@ import SyncingDataModal from './syncing-data-modal'
 import UpdateDSLModal from './update-dsl-modal'
 import DSLExportConfirmModal from './dsl-export-confirm-modal'
 import LimitTips from './limit-tips'
-import PluginDependency from './plugin-dependency'
 import {
   useStore,
   useWorkflowStore,
@@ -84,7 +81,6 @@ import {
   initialNodes,
 } from './utils'
 import {
-  CUSTOM_EDGE,
   CUSTOM_NODE,
   DSL_EXPORT_CHECK,
   ITERATION_CHILDREN_Z_INDEX,
@@ -99,16 +95,14 @@ import { useEventEmitterContextContext } from '@/context/event-emitter'
 import Confirm from '@/app/components/base/confirm'
 import { FILE_EXTS } from '@/app/components/base/prompt-editor/constants'
 import { fetchFileUploadConfig } from '@/service/common'
-import DatasetsDetailProvider from './datasets-detail-store/provider'
 
 const nodeTypes = {
   [CUSTOM_NODE]: CustomNode,
   [CUSTOM_NOTE_NODE]: CustomNoteNode,
   [CUSTOM_ITERATION_START_NODE]: CustomIterationStartNode,
-  [CUSTOM_LOOP_START_NODE]: CustomLoopStartNode,
 }
 const edgeTypes = {
-  [CUSTOM_EDGE]: CustomEdge,
+  [CUSTOM_NODE]: CustomEdge,
 }
 
 type WorkflowProps = {
@@ -286,7 +280,7 @@ const Workflow: FC<WorkflowProps> = memo(({
     <div
       id='workflow-container'
       className={`
-        relative h-full w-full min-w-[960px] 
+        relative w-full min-w-[960px] h-full 
         ${workflowReadOnly && 'workflow-panel-animation'}
         ${nodeAnimation && 'workflow-node-animation'}
       `}
@@ -333,7 +327,6 @@ const Workflow: FC<WorkflowProps> = memo(({
         )
       }
       <LimitTips />
-      <PluginDependency />
       <ReactFlow
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
@@ -357,7 +350,6 @@ const Workflow: FC<WorkflowProps> = memo(({
         onSelectionDrag={handleSelectionDrag}
         onPaneContextMenu={handlePaneContextMenu}
         connectionLineComponent={CustomConnectionLine}
-        // TODO: For LOOP node, how to distinguish between ITERATION and LOOP here? Maybe both are the same?
         connectionLineContainerStyle={{ zIndex: ITERATION_CHILDREN_Z_INDEX }}
         defaultViewport={viewport}
         multiSelectionKeyCode={null}
@@ -410,7 +402,7 @@ const WorkflowWrap = memo(() => {
 
   if (!data || isLoading) {
     return (
-      <div className='relative flex h-full w-full items-center justify-center'>
+      <div className='flex justify-center items-center relative w-full h-full'>
         <Loading />
       </div>
     )
@@ -449,13 +441,11 @@ const WorkflowWrap = memo(() => {
         nodes={nodesData}
         edges={edgesData} >
         <FeaturesProvider features={initialFeatures}>
-          <DatasetsDetailProvider nodes={nodesData}>
-            <Workflow
-              nodes={nodesData}
-              edges={edgesData}
-              viewport={data?.graph.viewport}
-            />
-          </DatasetsDetailProvider>
+          <Workflow
+            nodes={nodesData}
+            edges={edgesData}
+            viewport={data?.graph.viewport}
+          />
         </FeaturesProvider>
       </WorkflowHistoryProvider>
     </ReactFlowProvider>

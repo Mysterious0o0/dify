@@ -11,7 +11,6 @@ import type { UploadFileSetting } from '@/app/components/workflow/types'
 export enum Theme {
   light = 'light',
   dark = 'dark',
-  system = 'system',
 }
 
 export enum ProviderType {
@@ -26,14 +25,14 @@ export enum ProviderType {
 }
 
 export enum AppType {
-  chat = 'chat',
-  completion = 'completion',
+  'chat' = 'chat',
+  'completion' = 'completion',
 }
 
 export enum ModelModeType {
-  chat = 'chat',
-  completion = 'completion',
-  unset = '',
+  'chat' = 'chat',
+  'completion' = 'completion',
+  'unset' = '',
 }
 
 export enum RETRIEVE_TYPE {
@@ -111,9 +110,9 @@ export type ParagraphTypeFormItem = {
 export type UserInputFormItem = {
   'text-input': TextTypeFormItem
 } | {
-  select: SelectTypeFormItem
+  'select': SelectTypeFormItem
 } | {
-  paragraph: TextTypeFormItem
+  'paragraph': TextTypeFormItem
 }
 
 export type AgentTool = {
@@ -352,13 +351,6 @@ export type App = {
   /** api site url */
   api_base_url: string
   tags: Tag[]
-  workflow?: {
-    id: string
-    created_at: number
-    created_by?: string
-    updated_at: number
-    updated_by?: string
-  }
 }
 
 export type AppSSO = {

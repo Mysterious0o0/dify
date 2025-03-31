@@ -72,15 +72,15 @@ const ModelParameterTrigger: FC<ModelParameterTriggerProps> = ({
       }) => (
         <div
           className={`
-            flex h-8 max-w-[200px] cursor-pointer items-center rounded-lg px-2
-            ${open && 'bg-state-base-hover'}
+            flex items-center max-w-[200px] h-8 px-2 rounded-lg cursor-pointer
+            ${open && 'bg-gray-100'}
             ${currentModel && currentModel.status !== ModelStatusEnum.active && '!bg-[#FFFAEB]'}
           `}
         >
           {
             currentProvider && (
               <ModelIcon
-                className='mr-1 !h-4 !w-4'
+                className='mr-1 !w-4 !h-4'
                 provider={currentProvider}
                 modelName={currentModel?.model}
               />
@@ -88,31 +88,31 @@ const ModelParameterTrigger: FC<ModelParameterTriggerProps> = ({
           }
           {
             !currentProvider && (
-              <div className='mr-1 flex h-4 w-4 items-center justify-center rounded'>
-                <CubeOutline className='h-4 w-4 text-text-accent' />
+              <div className='flex items-center justify-center mr-1 w-4 h-4 rounded border border-dashed border-primary-100'>
+                <CubeOutline className='w-[11px] h-[11px] text-primary-600' />
               </div>
             )
           }
           {
             currentModel && (
               <ModelName
-                className='mr-0.5 text-text-secondary'
+                className='mr-0.5 text-gray-800'
                 modelItem={currentModel}
               />
             )
           }
           {
             !currentModel && (
-              <div className='mr-0.5 truncate text-[13px] font-medium text-text-accent'>
+              <div className='mr-0.5 text-[13px] font-medium text-primary-600 truncate'>
                 {t('common.modelProvider.selectModel')}
               </div>
             )
           }
-          <RiArrowDownSLine className={`h-3 w-3 ${(currentModel && currentProvider) ? 'text-text-tertiary' : 'text-text-accent'}`} />
+          <RiArrowDownSLine className={`w-3 h-3 ${(currentModel && currentProvider) ? 'text-gray-800' : 'text-primary-600'}`} />
           {
             currentModel && currentModel.status !== ModelStatusEnum.active && (
               <Tooltip popupContent={MODEL_STATUS_TEXT[currentModel.status][language]}>
-                <AlertTriangle className='h-4 w-4 text-[#F79009]' />
+                <AlertTriangle className='w-4 h-4 text-[#F79009]' />
               </Tooltip>
             )
           }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { forwardRef, useMemo, useState } from 'react'
 import {
   useRouter,
   useSearchParams,
@@ -18,15 +18,7 @@ export type CreateAppCardProps = {
   onSuccess?: () => void
 }
 
-const CreateAppCard = (
-  {
-    ref,
-    className,
-    onSuccess,
-  }: CreateAppCardProps & {
-    ref: React.RefObject<HTMLDivElement>;
-  },
-) => {
+const CreateAppCard = forwardRef<HTMLDivElement, CreateAppCardProps>(({ className, onSuccess }, ref) => {
   const { t } = useTranslation()
   const { onPlanInfoChanged } = useProviderContext()
   const searchParams = useSearchParams()
@@ -47,22 +39,22 @@ const CreateAppCard = (
   return (
     <div
       ref={ref}
-      className={cn('relative col-span-1 inline-flex h-[160px] flex-col justify-between rounded-xl border-[0.5px] border-components-card-border bg-components-card-bg', className)}
+      className={cn('relative col-span-1 inline-flex flex-col justify-between h-[160px] bg-components-card-bg rounded-xl border-[0.5px] border-components-card-border', className)}
     >
-      <div className='grow rounded-t-xl p-2'>
-        <div className='px-6 pb-1 pt-2 text-xs font-medium leading-[18px] text-text-tertiary'>{t('app.createApp')}</div>
-        <button className='mb-1 flex w-full cursor-pointer items-center rounded-lg px-6 py-[7px] text-[13px] font-medium leading-[18px] text-text-tertiary hover:bg-state-base-hover hover:text-text-secondary' onClick={() => setShowNewAppModal(true)}>
-          <FilePlus01 className='mr-2 h-4 w-4 shrink-0' />
+      <div className='grow p-2 rounded-t-xl'>
+        <div className='px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-text-tertiary'>{t('app.createApp')}</div>
+        <button className='w-full flex items-center mb-1 px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-text-tertiary cursor-pointer hover:text-text-secondary hover:bg-state-base-hover' onClick={() => setShowNewAppModal(true)}>
+          <FilePlus01 className='shrink-0 mr-2 w-4 h-4' />
           {t('app.newApp.startFromBlank')}
         </button>
-        <button className='flex w-full cursor-pointer items-center rounded-lg px-6 py-[7px] text-[13px] font-medium leading-[18px] text-text-tertiary hover:bg-state-base-hover hover:text-text-secondary' onClick={() => setShowNewAppTemplateDialog(true)}>
-          <FilePlus02 className='mr-2 h-4 w-4 shrink-0' />
+        <button className='w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-text-tertiary cursor-pointer hover:text-text-secondary hover:bg-state-base-hover' onClick={() => setShowNewAppTemplateDialog(true)}>
+          <FilePlus02 className='shrink-0 mr-2 w-4 h-4' />
           {t('app.newApp.startFromTemplate')}
         </button>
         <button
           onClick={() => setShowCreateFromDSLModal(true)}
-          className='flex w-full cursor-pointer items-center rounded-lg px-6 py-[7px] text-[13px] font-medium leading-[18px] text-text-tertiary hover:bg-state-base-hover hover:text-text-secondary'>
-          <FileArrow01 className='mr-2 h-4 w-4 shrink-0' />
+          className='w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-text-tertiary cursor-pointer hover:text-text-secondary hover:bg-state-base-hover'>
+          <FileArrow01 className='shrink-0 mr-2 w-4 h-4' />
           {t('app.importDSL')}
         </button>
       </div>
@@ -111,7 +103,7 @@ const CreateAppCard = (
       />
     </div>
   )
-}
+})
 
 CreateAppCard.displayName = 'CreateAppCard'
 export default CreateAppCard

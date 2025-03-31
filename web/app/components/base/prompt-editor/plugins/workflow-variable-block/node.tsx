@@ -9,7 +9,7 @@ export type SerializedNode = SerializedLexicalNode & {
   workflowNodesMap: WorkflowNodesMap
 }
 
-export class WorkflowVariableBlockNode extends DecoratorNode<React.JSX.Element> {
+export class WorkflowVariableBlockNode extends DecoratorNode<JSX.Element> {
   __variables: string[]
   __workflowNodesMap: WorkflowNodesMap
 
@@ -18,7 +18,7 @@ export class WorkflowVariableBlockNode extends DecoratorNode<React.JSX.Element> 
   }
 
   static clone(node: WorkflowVariableBlockNode): WorkflowVariableBlockNode {
-    return new WorkflowVariableBlockNode(node.__variables, node.__workflowNodesMap, node.__key)
+    return new WorkflowVariableBlockNode(node.__variables, node.__workflowNodesMap)
   }
 
   isInline(): boolean {
@@ -42,7 +42,7 @@ export class WorkflowVariableBlockNode extends DecoratorNode<React.JSX.Element> 
     return false
   }
 
-  decorate(): React.JSX.Element {
+  decorate(): JSX.Element {
     return (
       <WorkflowVariableBlockComponent
         nodeKey={this.getKey()}

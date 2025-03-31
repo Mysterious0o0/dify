@@ -31,7 +31,7 @@ const SupportVarInput: FC<Props> = ({
   return (
     <div
       className={
-        cn(wrapClassName, 'flex h-full w-full')
+        cn(wrapClassName, 'flex w-full h-full')
       } onClick={onFocus}
     >
       {(isFocus && !readonly && children)
@@ -40,7 +40,7 @@ const SupportVarInput: FC<Props> = ({
         )
         : (
           <div
-            className={cn(textClassName, 'h-full w-0 grow truncate whitespace-nowrap')}
+            className={cn(textClassName, 'w-0 grow h-full whitespace-nowrap truncate')}
             title={value}
             dangerouslySetInnerHTML={{
               __html: withHightContent,

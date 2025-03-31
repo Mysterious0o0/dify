@@ -1,18 +1,14 @@
 import React from 'react'
-import type { Locale } from '@/i18n'
+import { type Locale } from '@/i18n'
 import DevelopMain from '@/app/components/develop'
 
 export type IDevelopProps = {
-  params: Promise<{ locale: Locale; appId: string }>
+  params: { locale: Locale; appId: string }
 }
 
-const Develop = async (props: IDevelopProps) => {
-  const params = await props.params
-
-  const {
-    appId,
-  } = params
-
+const Develop = async ({
+  params: { appId },
+}: IDevelopProps) => {
   return <DevelopMain appId={appId} />
 }
 

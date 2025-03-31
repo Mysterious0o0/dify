@@ -2,7 +2,6 @@ import type { FC } from 'react'
 import { memo } from 'react'
 import { BlockEnum } from './types'
 import {
-  Agent,
   Answer,
   Assigner,
   Code,
@@ -15,7 +14,6 @@ import {
   KnowledgeRetrieval,
   ListFilter,
   Llm,
-  Loop,
   ParameterExtractor,
   QuestionClassifier,
   TemplatingTransform,
@@ -52,12 +50,9 @@ const getIcon = (type: BlockEnum, className: string) => {
     [BlockEnum.Tool]: <VariableX className={className} />,
     [BlockEnum.IterationStart]: <VariableX className={className} />,
     [BlockEnum.Iteration]: <Iteration className={className} />,
-    [BlockEnum.LoopStart]: <VariableX className={className} />,
-    [BlockEnum.Loop]: <Loop className={className} />,
     [BlockEnum.ParameterExtractor]: <ParameterExtractor className={className} />,
     [BlockEnum.DocExtractor]: <DocsExtractor className={className} />,
     [BlockEnum.ListFilter]: <ListFilter className={className} />,
-    [BlockEnum.Agent]: <Agent className={className} />,
   }[type]
 }
 const ICON_CONTAINER_BG_COLOR_MAP: Record<string, string> = {
@@ -67,7 +62,6 @@ const ICON_CONTAINER_BG_COLOR_MAP: Record<string, string> = {
   [BlockEnum.End]: 'bg-util-colors-warning-warning-500',
   [BlockEnum.IfElse]: 'bg-util-colors-cyan-cyan-500',
   [BlockEnum.Iteration]: 'bg-util-colors-cyan-cyan-500',
-  [BlockEnum.Loop]: 'bg-util-colors-cyan-cyan-500',
   [BlockEnum.HttpRequest]: 'bg-util-colors-violet-violet-500',
   [BlockEnum.Answer]: 'bg-util-colors-warning-warning-500',
   [BlockEnum.KnowledgeRetrieval]: 'bg-util-colors-green-green-500',
@@ -79,7 +73,6 @@ const ICON_CONTAINER_BG_COLOR_MAP: Record<string, string> = {
   [BlockEnum.ParameterExtractor]: 'bg-util-colors-blue-blue-500',
   [BlockEnum.DocExtractor]: 'bg-util-colors-green-green-500',
   [BlockEnum.ListFilter]: 'bg-util-colors-cyan-cyan-500',
-  [BlockEnum.Agent]: 'bg-util-colors-indigo-indigo-500',
 }
 const BlockIcon: FC<BlockIconProps> = ({
   type,
@@ -108,7 +101,7 @@ const BlockIcon: FC<BlockIconProps> = ({
               typeof toolIcon === 'string'
                 ? (
                   <div
-                    className='h-full w-full shrink-0 rounded-md bg-cover bg-center'
+                    className='shrink-0 w-full h-full bg-cover bg-center rounded-md'
                     style={{
                       backgroundImage: `url(${toolIcon})`,
                     }}
@@ -116,7 +109,7 @@ const BlockIcon: FC<BlockIconProps> = ({
                 )
                 : (
                   <AppIcon
-                    className='!h-full !w-full shrink-0'
+                    className='shrink-0 !w-full !h-full'
                     size='tiny'
                     icon={toolIcon?.content}
                     background={toolIcon?.background}

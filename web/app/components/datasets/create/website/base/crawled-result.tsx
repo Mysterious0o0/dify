@@ -57,19 +57,17 @@ const CrawledResult: FC<Props> = ({
   }, [list, onPreview])
 
   return (
-    <div className={cn(className, 'border-t-[0.5px] border-divider-regular shadow-xs shadow-shadow-shadow-3')}>
-      <div className='flex h-[34px] items-center justify-between px-4'>
+    <div className={cn(className, 'border-t border-gray-200')}>
+      <div className='flex items-center justify-between h-[34px] px-4 bg-gray-50 shadow-xs border-b-[0.5px] border-black/8 text-xs font-normal text-gray-700'>
         <CheckboxWithLabel
           isChecked={isCheckAll}
           onChange={handleCheckedAll} label={isCheckAll ? t(`${I18N_PREFIX}.resetAll`) : t(`${I18N_PREFIX}.selectAll`)}
-          labelClassName='system-[13px] leading-[16px] font-medium text-text-secondary'
+          labelClassName='!font-medium'
         />
-        <div className='text-xs text-text-tertiary'>
-          {t(`${I18N_PREFIX}.scrapTimeInfo`, {
-            total: list.length,
-            time: usedTime.toFixed(1),
-          })}
-        </div>
+        <div>{t(`${I18N_PREFIX}.scrapTimeInfo`, {
+          total: list.length,
+          time: usedTime.toFixed(1),
+        })}</div>
       </div>
       <div className='p-2'>
         {list.map((item, index) => (

@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useState } from 'react'
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/24/solid'
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
 import Indicator from '../indicator'
 import type { AppDetailResponse } from '@/models/app'
@@ -30,19 +30,19 @@ export default function AppSelector({ appItems, curApp }: IAppSelectorProps) {
     <div className="">
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          <MenuButton
+          <Menu.Button
             className="
-              inline-flex h-7 w-full items-center justify-center
+              inline-flex items-center w-full h-7 justify-center
               rounded-[10px] pl-2 pr-2.5 text-[14px] font-semibold
               text-[#1C64F2] hover:bg-[#EBF5FF]
             "
           >
             {curApp?.name}
             <ChevronDownIcon
-              className="ml-1 h-3 w-3"
+              className="w-3 h-3 ml-1"
               aria-hidden="true"
             />
-          </MenuButton>
+          </Menu.Button>
         </div>
         <Transition
           as={Fragment}
@@ -53,58 +53,58 @@ export default function AppSelector({ appItems, curApp }: IAppSelectorProps) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <MenuItems
+          <Menu.Items
             className="
               absolute -left-11 right-0 mt-1.5 w-60 max-w-80
-              origin-top-right divide-y divide-gray-100 rounded-lg bg-white
+              divide-y divide-gray-100 origin-top-right rounded-lg bg-white
               shadow-lg
             "
           >
-            {!!appItems.length && (<div className="overflow-auto px-1 py-1" style={{ maxHeight: '50vh' }}>
+            {!!appItems.length && (<div className="px-1 py-1 overflow-auto" style={{ maxHeight: '50vh' }}>
               {
                 appItems.map((app: AppDetailResponse) => (
-                  <MenuItem key={app.id}>
+                  <Menu.Item key={app.id}>
                     <div className={itemClassName} onClick={() =>
                       router.push(`/app/${app.id}/${isCurrentWorkspaceEditor ? 'configuration' : 'overview'}`)
                     }>
-                      <div className='relative mr-2 h-6 w-6 rounded-[6px] bg-[#D5F5F6]'>
+                      <div className='relative w-6 h-6 mr-2 bg-[#D5F5F6] rounded-[6px]'>
                         <AppIcon size='tiny' />
-                        <div className='absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 items-center justify-center rounded bg-white'>
+                        <div className='flex justify-center items-center absolute -right-0.5 -bottom-0.5 w-2.5 h-2.5 bg-white rounded'>
                           <Indicator />
                         </div>
                       </div>
                       {app.name}
                     </div>
-                  </MenuItem>
+                  </Menu.Item>
                 ))
               }
             </div>)}
-            {isCurrentWorkspaceEditor && <MenuItem>
+            {isCurrentWorkspaceEditor && <Menu.Item>
               <div className='p-1' onClick={() => setShowNewAppDialog(true)}>
                 <div
-                  className='flex h-12 cursor-pointer items-center rounded-lg hover:bg-gray-100'
+                  className='flex items-center h-12 rounded-lg cursor-pointer hover:bg-gray-100'
                 >
                   <div
                     className='
-                      ml-4 mr-2 flex
-                      h-6 w-6 items-center justify-center rounded-[6px] border-[0.5px]
-                      border-dashed border-gray-200 bg-gray-100
+                      flex justify-center items-center
+                      ml-4 mr-2 w-6 h-6 bg-gray-100 rounded-[6px]
+                      border-[0.5px] border-gray-200 border-dashed
                     '
                   >
-                    <PlusIcon className='h-4 w-4 text-gray-500' />
+                    <PlusIcon className='w-4 h-4 text-gray-500' />
                   </div>
-                  <div className='text-[14px] font-normal text-gray-700'>{t('common.menus.newApp')}</div>
+                  <div className='font-normal text-[14px] text-gray-700'>{t('common.menus.newApp')}</div>
                 </div>
               </div>
-            </MenuItem>
+            </Menu.Item>
             }
-          </MenuItems>
+          </Menu.Items>
         </Transition>
       </Menu>
       <CreateAppDialog
         show={showNewAppDialog}
         onClose={() => setShowNewAppDialog(false)}
-        onSuccess={() => { }}
+        onSuccess={() => {}}
       />
     </div>
   )

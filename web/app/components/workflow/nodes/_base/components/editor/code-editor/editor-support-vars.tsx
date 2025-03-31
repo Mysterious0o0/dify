@@ -88,7 +88,7 @@ const CodeEditor: FC<Props> = ({
 
       const index = (() => {
         if (match)
-          return Number.parseInt(match[1]!) + 1
+          return parseInt(match[1]!) + 1
 
         return 1
       })()
@@ -148,7 +148,7 @@ const CodeEditor: FC<Props> = ({
       {isShowVarPicker && (
         <div
           ref={popupRef}
-          className='w-[228px] space-y-1 rounded-lg border border-gray-200 bg-white p-1 shadow-lg'
+          className='w-[228px] p-1 bg-white rounded-lg border border-gray-200 shadow-lg space-y-1'
           style={{
             position: 'fixed',
             top: popupPosition.y,

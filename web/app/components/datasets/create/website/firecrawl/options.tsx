@@ -36,11 +36,10 @@ const Options: FC<Props> = ({
         label={t(`${I18N_PREFIX}.crawlSubPage`)}
         isChecked={payload.crawl_sub_pages}
         onChange={handleChange('crawl_sub_pages')}
-        labelClassName='text-[13px] leading-[16px] font-medium text-text-secondary'
       />
       <div className='flex justify-between space-x-4'>
         <Field
-          className='shrink-0 grow'
+          className='grow shrink-0'
           label={t(`${I18N_PREFIX}.limit`)}
           value={payload.limit}
           onChange={handleChange('limit')}
@@ -48,7 +47,7 @@ const Options: FC<Props> = ({
           isRequired
         />
         <Field
-          className='shrink-0 grow'
+          className='grow shrink-0'
           label={t(`${I18N_PREFIX}.maxDepth`)}
           value={payload.max_depth}
           onChange={handleChange('max_depth')}
@@ -59,14 +58,14 @@ const Options: FC<Props> = ({
 
       <div className='flex justify-between space-x-4'>
         <Field
-          className='shrink-0 grow'
+          className='grow shrink-0'
           label={t(`${I18N_PREFIX}.excludePaths`)}
           value={payload.excludes}
           onChange={handleChange('excludes')}
           placeholder='blog/*, /about/*'
         />
         <Field
-          className='shrink-0 grow'
+          className='grow shrink-0'
           label={t(`${I18N_PREFIX}.includeOnlyPaths`)}
           value={payload.includes}
           onChange={handleChange('includes')}
@@ -77,7 +76,6 @@ const Options: FC<Props> = ({
         label={t(`${I18N_PREFIX}.extractOnlyMainContent`)}
         isChecked={payload.only_main_content}
         onChange={handleChange('only_main_content')}
-        labelClassName='text-[13px] leading-[16px] font-medium text-text-secondary'
       />
     </div>
   )

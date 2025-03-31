@@ -31,7 +31,7 @@ export const useNodesExtraData = () => {
   }), [t, isChatMode])
 }
 
-export const useAvailableBlocks = (nodeType?: BlockEnum, isInIteration?: boolean, isInLoop?: boolean) => {
+export const useAvailableBlocks = (nodeType?: BlockEnum, isInIteration?: boolean) => {
   const nodesExtraData = useNodesExtraData()
   const availablePrevBlocks = useMemo(() => {
     if (!nodeType)
@@ -48,23 +48,15 @@ export const useAvailableBlocks = (nodeType?: BlockEnum, isInIteration?: boolean
   return useMemo(() => {
     return {
       availablePrevBlocks: availablePrevBlocks.filter((nType) => {
-        if (isInIteration && (nType === BlockEnum.Iteration || nType === BlockEnum.Loop || nType === BlockEnum.End))
+        if (isInIteration && (nType === BlockEnum.Iteration || nType === BlockEnum.End))
           return false
-
-        if (isInLoop && (nType === BlockEnum.Iteration || nType === BlockEnum.Loop || nType === BlockEnum.End))
-          return false
-
         return true
       }),
       availableNextBlocks: availableNextBlocks.filter((nType) => {
-        if (isInIteration && (nType === BlockEnum.Iteration || nType === BlockEnum.Loop || nType === BlockEnum.End))
+        if (isInIteration && (nType === BlockEnum.Iteration || nType === BlockEnum.End))
           return false
-
-        if (isInLoop && (nType === BlockEnum.Iteration || nType === BlockEnum.Loop || nType === BlockEnum.End))
-          return false
-
         return true
       }),
     }
-  }, [isInIteration, availablePrevBlocks, availableNextBlocks, isInLoop])
+  }, [isInIteration, availablePrevBlocks, availableNextBlocks])
 }

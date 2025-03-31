@@ -7,7 +7,6 @@ from controllers.service_api import api
 from controllers.service_api.dataset.error import DatasetInUseError, DatasetNameDuplicateError
 from controllers.service_api.wraps import DatasetApiResource
 from core.model_runtime.entities.model_entities import ModelType
-from core.plugin.entities.plugin import ModelProviderID
 from core.provider_manager import ProviderManager
 from fields.dataset_fields import dataset_detail_fields
 from libs.login import current_user
@@ -49,8 +48,7 @@ class DatasetListApi(DatasetApiResource):
 
         data = marshal(datasets, dataset_detail_fields)
         for item in data:
-            if item["indexing_technique"] == "high_quality" and item["embedding_model_provider"]:
-                item["embedding_model_provider"] = str(ModelProviderID(item["embedding_model_provider"]))
+            if item["indexing_technique"] == "high_quality":
                 item_model = f"{item['embedding_model']}:{item['embedding_model_provider']}"
                 if item_model in model_names:
                     item["embedding_available"] = True

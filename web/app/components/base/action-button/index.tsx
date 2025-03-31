@@ -8,7 +8,6 @@ enum ActionButtonState {
   Active = 'active',
   Disabled = 'disabled',
   Default = '',
-  Hover = 'hover',
 }
 
 const actionButtonVariants = cva(
@@ -29,7 +28,7 @@ const actionButtonVariants = cva(
 )
 
 export type ActionButtonProps = {
-  size?: 'xs' | 's' | 'm' | 'l' | 'xl'
+  size?: 'xs' | 'm' | 'l' | 'xl'
   state?: ActionButtonState
   styleCss?: CSSProperties
 } & React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof actionButtonVariants>
@@ -42,8 +41,6 @@ function getActionButtonState(state: ActionButtonState) {
       return 'action-btn-active'
     case ActionButtonState.Disabled:
       return 'action-btn-disabled'
-    case ActionButtonState.Hover:
-      return 'action-btn-hover'
     default:
       return ''
   }

@@ -27,8 +27,6 @@ const useConfig = (id: string, payload: ListFilterNodeType) => {
   const currentNode = getNodes().find(n => n.id === id)
   const isInIteration = payload.isInIteration
   const iterationNode = isInIteration ? getNodes().find(n => n.id === currentNode!.parentId) : null
-  const isInLoop = payload.isInLoop
-  const loopNode = isInLoop ? getNodes().find(n => n.id === currentNode!.parentId) : null
   const availableNodes = useMemo(() => {
     return getBeforeNodesInSameBranch(id)
   }, [getBeforeNodesInSameBranch, id])
@@ -38,7 +36,7 @@ const useConfig = (id: string, payload: ListFilterNodeType) => {
   const { getCurrentVariableType } = useWorkflowVariables()
   const getType = useCallback((variable?: ValueSelector) => {
     const varType = getCurrentVariableType({
-      parentNode: isInIteration ? iterationNode : loopNode,
+      parentNode: iterationNode,
       valueSelector: variable || inputs.variable || [],
       availableNodes,
       isChatMode,
@@ -62,7 +60,7 @@ const useConfig = (id: string, payload: ListFilterNodeType) => {
         itemVarType = varType
     }
     return { varType, itemVarType }
-  }, [availableNodes, getCurrentVariableType, inputs.variable, isChatMode, isInIteration, iterationNode, loopNode])
+  }, [availableNodes, getCurrentVariableType, inputs.variable, isChatMode, iterationNode])
 
   const { varType, itemVarType } = getType()
 

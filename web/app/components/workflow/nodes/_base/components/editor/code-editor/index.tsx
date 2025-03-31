@@ -18,11 +18,11 @@ const CODE_EDITOR_LINE_HEIGHT = 18
 
 export type Props = {
   value?: string | object
-  placeholder?: React.JSX.Element | string
+  placeholder?: JSX.Element | string
   onChange?: (value: string) => void
-  title?: React.JSX.Element
+  title?: JSX.Element
   language: CodeLanguage
-  headerRight?: React.JSX.Element
+  headerRight?: JSX.Element
   readOnly?: boolean
   isJSONStringifyBeauty?: boolean
   height?: number
@@ -34,7 +34,7 @@ export type Props = {
   onGenerated?: (value: string) => void
   showCodeGenerator?: boolean
   className?: string
-  tip?: React.JSX.Element
+  tip?: JSX.Element
 }
 
 export const languageMap = {
@@ -186,14 +186,14 @@ const CodeEditor: FC<Props> = ({
         }}
         onMount={handleEditorDidMount}
       />
-      {!outPutValue && !isFocus && <div className='pointer-events-none absolute left-[36px] top-0 text-[13px] font-normal leading-[18px] text-gray-300'>{placeholder}</div>}
+      {!outPutValue && !isFocus && <div className='pointer-events-none absolute left-[36px] top-0 leading-[18px] text-[13px] font-normal text-gray-300'>{placeholder}</div>}
     </>
   )
 
   return (
     <div className={cn(isExpand && 'h-full', className)}>
       {noWrapper
-        ? <div className='no-wrapper relative' style={{
+        ? <div className='relative no-wrapper' style={{
           height: isExpand ? '100%' : (editorContentHeight) / 2 + CODE_EDITOR_LINE_HEIGHT, // In IDE, the last line can always be in lop line. So there is some blank space in the bottom.
           minHeight: CODE_EDITOR_LINE_HEIGHT,
         }}>

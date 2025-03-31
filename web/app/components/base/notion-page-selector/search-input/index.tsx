@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RiCloseCircleFill, RiSearchLine } from '@remixicon/react'
+import s from './index.module.css'
 import cn from '@/utils/classnames'
 
 type SearchInputProps = {
@@ -19,18 +19,18 @@ const SearchInput = ({
   }, [onChange])
 
   return (
-    <div className={cn('flex h-8 w-[200px] items-center rounded-lg bg-components-input-bg-normal p-2')}>
-      <RiSearchLine className={'mr-0.5 h-4 w-4 shrink-0 text-components-input-text-placeholder'} />
+    <div className={cn(s['input-wrapper'], 'flex items-center px-2 h-7 rounded-md', `${value ? 'bg-white' : 'bg-gray-100'}`)}>
+      <div className={cn(s['search-icon'], 'mr-[6px] w-4 h-4')} />
       <input
-        className='min-w-0 grow appearance-none border-0 bg-transparent px-1 text-[13px] leading-[16px] text-components-input-text-filled outline-0 placeholder:text-components-input-text-placeholder'
+        className='grow text-[13px] bg-inherit border-0 outline-0 appearance-none'
         value={value}
         onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
         placeholder={t('common.dataSource.notion.selector.searchPages') || ''}
       />
       {
         value && (
-          <RiCloseCircleFill
-            className={'h-4 w-4 shrink-0 cursor-pointer text-components-input-text-placeholder'}
+          <div
+            className={cn(s['clear-icon'], 'ml-1 w-4 h-4 cursor-pointer')}
             onClick={handleClear}
           />
         )

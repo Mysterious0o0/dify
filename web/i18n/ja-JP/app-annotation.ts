@@ -70,7 +70,6 @@ const translation = {
     noHitHistory: 'ヒット履歴はありません',
   },
   hitHistoryTable: {
-    question: '質問',
     query: 'クエリ',
     match: '一致',
     response: '応答',

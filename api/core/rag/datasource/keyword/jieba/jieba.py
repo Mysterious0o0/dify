@@ -88,17 +88,16 @@ class Jieba(BaseKeyword):
         keyword_table = self._get_dataset_keyword_table()
 
         k = kwargs.get("top_k", 4)
-        document_ids_filter = kwargs.get("document_ids_filter")
+
         sorted_chunk_indices = self._retrieve_ids_by_query(keyword_table or {}, query, k)
 
         documents = []
         for chunk_index in sorted_chunk_indices:
-            segment_query = db.session.query(DocumentSegment).filter(
-                DocumentSegment.dataset_id == self.dataset.id, DocumentSegment.index_node_id == chunk_index
+            segment = (
+                db.session.query(DocumentSegment)
+                .filter(DocumentSegment.dataset_id == self.dataset.id, DocumentSegment.index_node_id == chunk_index)
+                .first()
             )
-            if document_ids_filter:
-                segment_query = segment_query.filter(DocumentSegment.document_id.in_(document_ids_filter))
-            segment = segment_query.first()
 
             if segment:
                 documents.append(

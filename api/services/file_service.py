@@ -1,6 +1,5 @@
 import datetime
 import hashlib
-import os
 import uuid
 from typing import Any, Literal, Union
 
@@ -39,12 +38,7 @@ class FileService:
         source_url: str = "",
     ) -> UploadFile:
         # get file extension
-        extension = os.path.splitext(filename)[1].lstrip(".").lower()
-
-        # check if filename contains invalid characters
-        if any(c in filename for c in ["/", "\\", ":", "*", "?", '"', "<", ">", "|"]):
-            raise ValueError("Filename contains invalid characters")
-
+        extension = filename.split(".")[-1].lower()
         if len(filename) > 200:
             filename = filename.split(".")[0][:200] + "." + extension
 

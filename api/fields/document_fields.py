@@ -3,13 +3,6 @@ from flask_restful import fields  # type: ignore
 from fields.dataset_fields import dataset_fields
 from libs.helper import TimestampField
 
-document_metadata_fields = {
-    "id": fields.String,
-    "name": fields.String,
-    "type": fields.String,
-    "value": fields.String,
-}
-
 document_fields = {
     "id": fields.String,
     "position": fields.Integer,
@@ -32,7 +25,6 @@ document_fields = {
     "word_count": fields.Integer,
     "hit_count": fields.Integer,
     "doc_form": fields.String,
-    "doc_metadata": fields.List(fields.Nested(document_metadata_fields), attribute="doc_metadata_details"),
 }
 
 document_with_segments_fields = {
@@ -59,7 +51,6 @@ document_with_segments_fields = {
     "hit_count": fields.Integer,
     "completed_segments": fields.Integer,
     "total_segments": fields.Integer,
-    "doc_metadata": fields.List(fields.Nested(document_metadata_fields), attribute="doc_metadata_details"),
 }
 
 dataset_and_document_fields = {

@@ -21,7 +21,7 @@ export const createFileStore = (
   onChange?: (files: FileEntity[]) => void,
 ) => {
   return create<Shape>(set => ({
-    files: value ? [...value] : [],
+    files: [...value],
     setFiles: (files) => {
       set({ files })
       onChange?.(files)
@@ -54,7 +54,7 @@ export const FileContextProvider = ({
   value,
   onChange,
 }: FileProviderProps) => {
-  const storeRef = useRef<FileStore | undefined>(undefined)
+  const storeRef = useRef<FileStore>()
 
   if (!storeRef.current)
     storeRef.current = createFileStore(value, onChange)

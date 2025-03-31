@@ -7,15 +7,16 @@ const isDevelopment = process.env.NODE_ENV === 'development'
 
 const SentryInit = ({
   children,
-}: { children: React.ReactNode }) => {
+}: { children: React.ReactElement }) => {
   useEffect(() => {
     const SENTRY_DSN = document?.body?.getAttribute('data-public-sentry-dsn')
     if (!isDevelopment && SENTRY_DSN) {
       Sentry.init({
         dsn: SENTRY_DSN,
         integrations: [
-          Sentry.browserTracingIntegration(),
-          Sentry.replayIntegration(),
+          new Sentry.BrowserTracing({
+          }),
+          new Sentry.Replay(),
         ],
         tracesSampleRate: 0.1,
         replaysSessionSampleRate: 0.1,

@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useSearchParams, useSelectedLayoutSegment } from 'next/navigation'
+import { useSelectedLayoutSegment } from 'next/navigation'
 import type { INavSelectorProps } from './nav-selector'
 import NavSelector from './nav-selector'
 import classNames from '@/utils/classnames'
@@ -35,22 +35,14 @@ const Nav = ({
   const [hovered, setHovered] = useState(false)
   const segment = useSelectedLayoutSegment()
   const isActivated = Array.isArray(activeSegment) ? activeSegment.includes(segment!) : segment === activeSegment
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const [linkLastSearchParams, setLinkLastSearchParams] = useState('')
-
-  useEffect(() => {
-    if (pathname === link)
-      setLinkLastSearchParams(searchParams.toString())
-  }, [pathname, searchParams])
 
   return (
     <div className={`
-      mr-0 flex h-8 shrink-0 items-center rounded-xl px-0.5 text-sm font-medium sm:mr-3
-      ${isActivated && 'bg-components-main-nav-nav-button-bg-active font-semibold shadow-md'}
+      flex items-center h-8 mr-0 sm:mr-3 px-0.5 rounded-xl text-sm shrink-0 font-medium
+      ${isActivated && 'bg-components-main-nav-nav-button-bg-active shadow-md font-semibold'}
       ${!curNav && !isActivated && 'hover:bg-components-main-nav-nav-button-bg-hover'}
     `}>
-      <Link href={link + (linkLastSearchParams && `?${linkLastSearchParams}`)}>
+      <Link href={link}>
         <div
           onClick={() => setAppDetail()}
           className={classNames(`
@@ -64,7 +56,7 @@ const Nav = ({
           <div className='mr-2'>
             {
               (hovered && curNav)
-                ? <ArrowNarrowLeft className='h-4 w-4' />
+                ? <ArrowNarrowLeft className='w-4 h-4' />
                 : isActivated
                   ? activeIcon
                   : icon
@@ -76,7 +68,7 @@ const Nav = ({
       {
         curNav && isActivated && (
           <>
-            <div className='font-light text-divider-deep'>/</div>
+            <div className='font-light text-gray-300 '>/</div>
             <NavSelector
               isApp={isApp}
               curNav={curNav}
